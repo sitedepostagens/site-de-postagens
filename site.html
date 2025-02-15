@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu site (Alan Diego)</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Estilos globais */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+    
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+    
+        /* Cabeçalho */
+        header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 20px 40px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+    
+        h1, h2, h3 {
+            margin: 10px 0;
+            font-weight: 700;
+        }
+    
+        /* Tela inicial */
+        .home-screen, #post-section, #auth-section, #profile-section {
+            margin-top: 20px;
+            text-align: center;
+        }
+    
+        /* Botões de chamada */
+        .cta-buttons button, .auth-form button, .post-form button, .profile-buttons button {
+            padding: 14px 30px;
+            margin: 15px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+    
+        .cta-buttons button:hover, .auth-form button:hover, .post-form button:hover, .profile-buttons button:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+    
+        /* Formulários */
+        .auth-form, .post-form {
+            display: inline-block;
+            text-align: left;
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+    
+        .auth-form label, .post-form label {
+            display: block;
+            margin-bottom: 12px;
+            font-weight: 600;
+            color: #555;
+        }
+    
+        .auth-form input, .auth-form textarea, .post-form input, .post-form textarea {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
+        }
+    
+        .auth-form input:focus, .auth-form textarea:focus, .post-form input:focus, .post-form textarea:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+    
+        /* Perfil */
+        #profile-section {
+            display: none;
+            text-align: center;
+        }
+    
+        .profile-buttons {
+            margin-top: 20px;
+        }
+    
+        /* Postagem de mídia e URLs */
+        .post-form input[type="file"], .post-form input[type="text"] {
+            width: 100%;
+            font-size: 14px;
+            padding: 14px;
+            border-radius: 8px;
+        }
+    
+        .post-form textarea {
+            resize: vertical;
+        }
+    
+        /* Seção de Postagens */
+        #post-section {
+            display: none;
+            margin-top: 20px;
+            position: relative;
+        }
+    
+        .post-item {
+            background-color: #fff;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .post-item:hover {
+            transform: scale(1.03); /* Efeito de zoom */
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+    
+        .post-item h3 {
+            color: #007bff;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+    
+        .post-item .username {
+            font-weight: bold;
+            color: #444;
+        }
+    
+        .post-item .post-date {
+            font-size: 13px;
+            color: #888;
+        }
+    
+        .post-item .post-text {
+            margin: 15px 0;
+            font-size: 15px;
+            color: #333;
+        }
+    
+        .post-item img {
+            max-width: 100%;
+            border-radius: 12px;
+            margin-top: 15px;
+        }
+    
+        .post-item a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            transition: text-decoration 0.3s ease;
+        }
+    
+        .post-item a:hover {
+            text-decoration: underline;
+        }
+    
+        /* Rodapé */
+        footer {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-top: 30px;
+            border-radius: 12px;
+        }
+    
+        footer a {
+            color: white;
+            text-decoration: none;
+            transition: text-decoration 0.3s ease;
+        }
+    
+        footer a:hover {
+            text-decoration: underline;
+        }
+    
+        /* Responsividade para dispositivos móveis */
+        @media (max-width: 768px) {
+            header, .container {
+                padding: 10px;
+            }
+    
+            .cta-buttons button {
+                width: 100%;
+                padding: 14px;
+            }
+    
+            .auth-form, .post-form {
+                width: 100%;
+            }
+    
+            .post-item {
+                margin: 10px 0;
+            }
+        }
+    
+        /* Estilo para o botão de logout */
+        .logout-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+    
+        .logout-button:hover {
+            background-color: #c0392b;
+            transform: scale(1.05);
+        }
+    
+        /* Estilo de mensagem de erro */
+        .error-message {
+            color: #e74c3c;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+    </style>
+    
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="title">Postagens</h1>
+        </header>
+
+        <section id="home-screen" class="home-screen">
+            <h1>Bem-vindo ao Site de Postagens</h1>
+            <p>Compartilhe suas imagens, vídeos e pensamentos!</p>
+            <div class="cta-buttons">
+                <button onclick="showLoginForm()">Login</button>
+                <button onclick="showRegisterForm()">Cadastro</button>
+            </div>
+        </section>
+
+        <!-- Área de autenticação -->
+        <section id="auth-section" style="display:none;">
+            <div id="login-form" class="auth-form" aria-labelledby="title">
+                <h2>Login</h2>
+                <form onsubmit="handleLogin(event)">
+                    <label for="login-username">Nome de usuário:</label>
+                    <input type="text" id="login-username" required aria-label="Nome de usuário">
+                    <label for="login-password">Senha:</label>
+                    <input type="password" id="login-password" required aria-label="Senha">
+                    <button type="submit">Entrar</button>
+                </form>
+                <p id="login-error" class="error-message" style="display: none;">Usuário ou senha incorretos!</p>
+                <button onclick="showRegisterForm()">Criar uma conta</button>
+            </div>
+
+            <div id="register-form" class="auth-form" style="display:none;" aria-labelledby="title">
+                <h2>Cadastro</h2>
+                <form onsubmit="handleRegister(event)">
+                    <label for="register-username">Nome de usuário:</label>
+                    <input type="text" id="register-username" required aria-label="Nome de usuário">
+                    <label for="register-password">Senha:</label>
+                    <input type="password" id="register-password" required aria-label="Senha">
+                    <button type="submit">Cadastrar</button>
+                </form>
+                <button onclick="showLoginForm()">Já tenho uma conta</button>
+            </div>
+        </section>
+
+        <!-- Área de perfil -->
+        <section id="profile-section">
+            <h2>Bem-vindo, <span id="profile-username"></span></h2>
+            <div class="profile-buttons">
+                <button onclick="showPostSection()">Ir para a área de postagens</button>
+            </div>
+        </section>
+
+        <!-- Área de postagens -->
+        <section id="post-section">
+            <button class="logout-button" onclick="logout()">Logout</button>
+            <header>
+                <h2 class="subtitle">Área de Postagens</h2>
+                <form id="new-post-form" class="post-form" onsubmit="handlePost(event)">
+                    <label for="post-title">Título da Postagem:</label>
+                    <input type="text" id="post-title" required placeholder="Digite o título da postagem" aria-label="Título da postagem">
+                    
+                    <label for="post-text">Texto (Opcional):</label>
+                    <textarea id="post-text" rows="4" placeholder="Escreva algo..." aria-label="Texto da postagem"></textarea>
+
+                    <label for="post-media">Upload de Imagem ou Vídeo (Opcional):</label>
+                    <input type="file" id="post-media" accept="image/*,video/*" aria-label="Upload de imagem ou vídeo">
+
+                    <label for="post-url">URL de Imagem ou Vídeo (Opcional):</label>
+                    <input type="text" id="post-url" placeholder="Cole o link da imagem ou vídeo" aria-label="URL de imagem ou vídeo">
+
+                    <label for="post-link">Link Adicional (Opcional):</label>
+                    <input type="text" id="post-link" placeholder="Cole um link para mais informações" aria-label="Link adicional">
+
+                    <div style="display: flex; justify-content: space-between;">
+                        <button type="submit">Publicar</button>
+                        <button type="button" onclick="clearPostForm()">Cancelar</button>
+                    </div>
+                </form>
+            </header>
+            <div id="posts-container">
+                <!-- As postagens aparecerão aqui -->
+            </div>
+        </section>
+
+        <footer>
+            <ul>
+                <li>Seu <a href="mailto:brawlstars14062008@gmail.com">feedback</a> é importante para me ajudar!!!</li>
+                <li><a href="mailto:brawlstars14062008@gmail.com">E-Mail</a><br><a href="tel:+5581999994498">Telefone</a></li>
+            </ul>
+        </footer>
+    </div>
+
+    <script>
+        let loggedInUser = localStorage.getItem('loggedInUser');
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+    
+        // Se o usuário já estiver logado, mostre a área de perfil
+        if (loggedInUser) {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('profile-section').style.display = 'block';
+            document.getElementById('profile-username').textContent = loggedInUser;
+        }
+    
+        // Função para exibir formulário de login
+        function showLoginForm() {
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('login-form').style.display = 'block';
+            document.getElementById('register-form').style.display = 'none';
+        }
+    
+        // Função para exibir formulário de cadastro
+        function showRegisterForm() {
+            document.getElementById('auth-section').style.display = 'block';
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        }
+    
+        // Cadastro de usuário
+        function handleRegister(event) {
+            event.preventDefault();
+    
+            const username = document.getElementById('register-username').value.trim();
+            const password = document.getElementById('register-password').value.trim();
+    
+            if (!username || !password) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+    
+            // Verificar se o usuário já existe
+            const userExists = users.some(user => user.username === username);
+            if (userExists) {
+                alert("Este nome de usuário já está em uso!");
+                return;
+            }
+    
+            // Criar novo usuário
+            users.push({ username, password });
+            localStorage.setItem('users', JSON.stringify(users));
+    
+            alert(Cadastro bem-sucedido, ${username}!);
+    
+            // Redirecionar para login
+            showLoginForm();
+        }
+    
+        // Login do usuário
+        function handleLogin(event) {
+            event.preventDefault();
+    
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+    
+            if (!username || !password) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+    
+            // Buscar usuário
+            const user = users.find(user => user.username === username && user.password === password);
+    
+            if (user) {
+                localStorage.setItem('loggedInUser', username);
+                loggedInUser = username;
+    
+                alert(Login bem-sucedido, ${username}!);
+    
+                hideAllSections();
+                document.getElementById('profile-section').style.display = 'block';
+                document.getElementById('profile-username').textContent = loggedInUser;
+            } else {
+                document.getElementById('login-error').style.display = 'block';
+            }
+        }
+    
+        // Função para esconder todas as seções e mostrar a desejada
+        function hideAllSections() {
+            document.getElementById('home-screen').style.display = 'none';
+            document.getElementById('auth-section').style.display = 'none';
+            document.getElementById('profile-section').style.display = 'none';
+            document.getElementById('post-section').style.display = 'none';
+        }
+    
+        // Logout
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            loggedInUser = null;
+            hideAllSections();
+            document.getElementById('home-screen').style.display = 'block';
+        }
+    
+        // Função para exibir a área de postagens
+        function showPostSection() {
+            document.getElementById('profile-section').style.display = 'none';
+            document.getElementById('post-section').style.display = 'block';
+            displayPosts(); // Exibe as postagens salvas
+        }
+    
+        // Função para lidar com a postagem
+        function handlePost(event) {
+            event.preventDefault();
+    
+            const title = document.getElementById('post-title').value.trim();
+            const text = document.getElementById('post-text').value.trim();
+            const media = document.getElementById('post-media').files[0]; // Arquivo de mídia
+            const mediaUrl = document.getElementById('post-url').value.trim();
+            const link = document.getElementById('post-link').value.trim();
+    
+            if (!title && !text && !media && !mediaUrl && !link) {
+                alert("Preencha ao menos um campo para a postagem!");
+                return;
+            }
+    
+            const post = {
+                username: loggedInUser,
+                title: title,
+                text: text,
+                media: media || mediaUrl, // Se houver um arquivo de mídia, use ele, senão use a URL
+                link: link,
+                timestamp: new Date().toLocaleString(), // Data e hora
+            };
+    
+            posts.push(post); // Adiciona a nova postagem
+            localStorage.setItem('posts', JSON.stringify(posts)); // Salva no localStorage
+    
+            alert("Postagem publicada com sucesso!");
+    
+            clearPostForm();
+            displayPosts(); // Exibe as postagens novamente
+        }
+    
+        // Função para limpar o formulário de postagem
+        function clearPostForm() {
+            document.getElementById('post-title').value = '';
+            document.getElementById('post-text').value = '';
+            document.getElementById('post-media').value = '';
+            document.getElementById('post-url').value = '';
+            document.getElementById('post-link').value = '';
+        }
+    
+        // Função para exibir as postagens
+        function displayPosts() {
+            const postsContainer = document.getElementById('posts-container');
+            postsContainer.innerHTML = ''; // Limpa as postagens anteriores
+    
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post-item');
+    
+                const mediaContent = post.media ? 
+                    (post.media.includes('http') ? <img src="${post.media}" alt="Post Media"> : <video controls><source src="${URL.createObjectURL(post.media)}" type="video/${post.media.type.split('/')[1]}"></video>) 
+                    : '';
+    
+                postElement.innerHTML = 
+                    <h3>${post.title}</h3>
+                    <p class="username">${post.username}</p>
+                    <p class="post-date">${post.timestamp}</p>
+                    <p class="post-text">${post.text}</p>
+                    ${mediaContent}
+                    ${post.link ? <a href="${post.link}" target="_blank">Link adicional</a> : ''}
+                ;
+    
+                postsContainer.appendChild(postElement);
+            });
+        }
+    </script>
+    
+</body>
+</html>
