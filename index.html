@@ -3,557 +3,1041 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Site de Postagens</title>
+  <title>Comunidade Compartilha</title>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* CSS Variables */
+    /* Variáveis CSS */
     :root {
-      --primary-color: #3897f0;
-      --secondary-color: #2a85d0;
-      --danger-color: #e74c3c;
-      --background-color: #f2f2f2;
-      --text-color: #262626;
-      --border-color: #dbdbdb;
-      --nav-bg: #fff;
-      --modal-bg: rgba(0, 0, 0, 0.8);
+      --primary-color: #4361ee;
+      --primary-hover: #3a56d4;
+      --secondary-color: #3f37c9;
+      --danger-color: #f72585;
+      --success-color: #4cc9f0;
+      --background-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-color: #212529;
+      --text-light: #6c757d;
+      --border-color: #dee2e6;
+      --nav-bg: #ffffff;
+      --modal-bg: rgba(0, 0, 0, 0.6);
+      --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+      --transition: all 0.3s ease;
+    }
+    
+    /* Dark mode variables */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background-color: #121212;
+        --card-bg: #1e1e1e;
+        --text-color: #f8f9fa;
+        --text-light: #adb5bd;
+        --border-color: #343a40;
+        --nav-bg: #1a1a1a;
+      }
     }
     
     /* Reset e estilos básicos */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
     body {
-      font-family: 'Roboto', sans-serif;
+      font-family: 'Inter', sans-serif;
       background-color: var(--background-color);
       color: var(--text-color);
       line-height: 1.6;
+      min-height: 100vh;
     }
+    
     .container {
-      max-width: 935px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 0 15px;
     }
     
-    /* Cabeçalho (Tela Inicial / Login/Cadastro) */
-    header.login-header {
-      background-color: var(--nav-bg);
-      padding: 20px;
-      text-align: center;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    /* Tipografia */
+    h1, h2, h3, h4 {
+      font-weight: 600;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
     }
-    header.login-header h1 {
+    
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.25rem; }
+    
+    p { margin-bottom: 1rem; }
+    
+    a {
       color: var(--primary-color);
-      font-size: 2rem;
+      text-decoration: none;
+      transition: var(--transition);
     }
     
-    /* Seções Gerais */
-    .home-screen, #auth-section, #profile-section {
-      text-align: center;
-      margin-bottom: 20px;
+    a:hover {
+      color: var(--primary-hover);
+      text-decoration: underline;
     }
     
-    /* Botões Gerais */
-    button {
-      padding: 10px 20px;
-      margin: 10px;
-      font-size: 1rem;
-      background-color: var(--primary-color);
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-    button:hover { background-color: var(--secondary-color); transform: scale(1.03); }
-    .voltar-btn {
-      background-color: var(--secondary-color);
-      margin: 10px 0;
-    }
-    
-    /* Formulários de Autenticação */
-    .auth-form {
-      background-color: #fff;
-      padding: 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      max-width: 400px;
-      margin: 0 auto 20px;
-      text-align: left;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-    .auth-form label { display: block; margin-bottom: 5px; font-weight: 500; }
-    .auth-form input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      margin-bottom: 15px;
-    }
-    .error-message {
-      color: var(--danger-color);
-      font-weight: bold;
-      text-align: center;
-      margin-top: 10px;
-    }
-    
-    /* Barra de Navegação e Conteúdo */
-    .nav-bar {
+    /* Layout */
+    .flex {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: var(--nav-bg);
-      padding: 10px 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      margin-bottom: 20px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .nav-bar .nav-left h2 { font-size: 1.5rem; color: var(--primary-color); }
-    .nav-bar .nav-center { position: relative; }
-    .nav-bar .nav-center input {
-      padding: 5px 10px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      width: 200px;
-    }
-    .nav-bar .nav-right button {
-      background: none;
-      border: none;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-left: 10px;
-      color: var(--text-color);
-    }
-    .nav-bar .nav-right button:hover { color: var(--primary-color); }
-    #search-results {
-      position: absolute;
-      top: 40px;
-      left: 0;
-      right: 0;
-      background: #fff;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      max-height: 200px;
-      overflow-y: auto;
-      display: none;
-      z-index: 50;
-    }
-    .search-result {
-      padding: 10px;
-      border-bottom: 1px solid var(--border-color);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-    }
-    .search-result:last-child { border-bottom: none; }
-    .search-result img {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .search-result:hover { background-color: var(--background-color); }
     
-    /* Feed e Stories */
-    .feed-section {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-    }
-    .feed-item {
-      background-color: #fff;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      overflow: hidden;
-      position: relative;
-      transition: transform 0.3s, box-shadow 0.3s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    .feed-item:hover { transform: scale(1.02); box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
-    .feed-item img,
-    .feed-item video { width: 100%; display: block; }
-    .post-info { padding: 10px; }
-    .post-info h3 { font-size: 1rem; color: var(--primary-color); margin-bottom: 5px; }
-    .post-info p { font-size: 0.9rem; color: var(--text-color); }
-    .post-date { font-size: 0.8rem; color: #888; margin-top: 5px; }
-    .delete-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      background-color: var(--danger-color);
-      border: none;
-      border-radius: 50%;
-      width: 28px;
-      height: 28px;
-      color: #fff;
-      font-size: 0.9rem;
-      cursor: pointer;
+    .flex-center {
       display: flex;
       align-items: center;
       justify-content: center;
-      opacity: 0.8;
-      transition: opacity 0.3s;
     }
-    .delete-btn:hover { opacity: 1; }
+    
+    .grid {
+      display: grid;
+    }
+    
+    /* Cabeçalho */
+    header {
+      background-color: var(--nav-bg);
+      padding: 1rem 0;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+    
+    .logo i {
+      margin-right: 0.5rem;
+    }
+    
+    /* Navegação */
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+    
+    .nav-links a {
+      color: var(--text-color);
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-color);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 4rem 0;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      border-radius: var(--radius);
+      margin: 1rem 0;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero p {
+      font-size: 1.25rem;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+    
+    /* Cards */
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .card-img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    /* Botões */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 500;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      gap: 0.5rem;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+      color: white;
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-danger {
+      background-color: var(--danger-color);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      background-color: #e5177a;
+      color: white;
+    }
+    
+    .btn-sm {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+    
+    /* Formulários */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      background-color: var(--card-bg);
+      color: var(--text-color);
+      transition: var(--transition);
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    textarea.form-control {
+      min-height: 120px;
+      resize: vertical;
+    }
+    
+    /* Alertas */
+    .alert {
+      padding: 1rem;
+      border-radius: var(--radius);
+      margin-bottom: 1rem;
+    }
+    
+    .alert-danger {
+      background-color: rgba(247, 37, 133, 0.1);
+      color: var(--danger-color);
+      border: 1px solid rgba(247, 37, 133, 0.2);
+    }
+    
+    .alert-success {
+      background-color: rgba(76, 201, 240, 0.1);
+      color: var(--success-color);
+      border: 1px solid rgba(76, 201, 240, 0.2);
+    }
+    
+    /* Feed de Postagens */
+    .feed-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+    
+    .feed-item {
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+    }
+    
+    .feed-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feed-media {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+    }
+    
+    .feed-item video {
+      width: 100%;
+      max-height: 300px;
+      background-color: #000;
+    }
+    
+    .feed-content {
+      padding: 1.25rem;
+    }
+    
+    .feed-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+    
+    .feed-author {
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+    
+    .feed-date {
+      color: var(--text-light);
+    }
+    
+    .feed-title {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .feed-text {
+      color: var(--text-color);
+      margin-bottom: 1rem;
+    }
+    
+    .feed-actions {
+      display: flex;
+      gap: 1rem;
+      border-top: 1px solid var(--border-color);
+      padding-top: 1rem;
+    }
+    
+    /* Stories */
+    .stories-section {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 0;
+      margin: 1rem 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    
+    .stories-section::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .story-item {
+      flex: 0 0 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+    }
+    
+    .story-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-color);
+      padding: 2px;
+    }
+    
+    .story-username {
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80px;
+    }
+    
+    .add-story {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: var(--text-color);
+    }
     
     /* Modais */
     .modal {
       display: none;
       position: fixed;
-      z-index: 1000;
-      left: 0;
       top: 0;
+      left: 0;
       width: 100%;
       height: 100%;
       background-color: var(--modal-bg);
-      padding-top: 60px;
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 1rem;
     }
-    .modal-content {
-      background-color: #fff;
-      margin: 10% auto;
-      padding: 20px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      width: 90%;
-      max-width: 500px;
-      position: relative;
-      animation: fadeIn 0.3s ease;
-    }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    .modal-content .close {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 1.5rem;
-      font-weight: bold;
-      cursor: pointer;
-      color: #888;
-    }
-    .modal-content .close:hover { color: var(--danger-color); }
     
-    /* Modal do Story Viewer */
-    #story-modal .modal-content {
-      max-width: 800px;
-      padding: 0;
-      border: none;
-      background: transparent;
-      position: relative;
-      text-align: center;
-    }
-    #story-modal .close {
-      color: #fff;
-      font-size: 2rem;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      z-index: 101;
-    }
-    #story-modal img {
+    .modal-content {
+      background-color: var(--card-bg);
+      margin: 2rem auto;
+      max-width: 600px;
       width: 100%;
+      border-radius: var(--radius);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      position: relative;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+    
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .modal-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-title {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-light);
+    }
+    
+    .modal-body {
+      padding: 1.25rem;
+    }
+    
+    .modal-footer {
+      padding: 1.25rem;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    
+    /* Story Viewer */
+    .story-viewer {
+      position: relative;
+      max-width: 100%;
+      max-height: 90vh;
+      margin: 0 auto;
+    }
+    
+    .story-viewer img {
+      max-width: 100%;
       max-height: 80vh;
       display: block;
-      border-radius: 4px;
+      margin: 0 auto;
+      border-radius: var(--radius);
     }
-    #prev-story, #next-story {
+    
+    .story-nav {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background-color: rgba(0, 0, 0, 0.3);
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .story-nav:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    .story-prev {
+      left: 1rem;
+    }
+    
+    .story-next {
+      right: 1rem;
+    }
+    
+    .story-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
       background: none;
       border: none;
-      color: #fff;
+      color: white;
       font-size: 2rem;
-      z-index: 101;
       cursor: pointer;
-      padding: 0 10px;
     }
-    #prev-story { left: 10px; }
-    #next-story { right: 10px; }
     
-    /* Botões de Navegação (Logout e Início) */
-    .logout-button, .voltar-btn {
-      position: fixed;
-      top: 20px;
-      background-color: var(--danger-color);
-      color: #fff;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      z-index: 1001;
-      transition: background-color 0.3s;
-    }
-    .logout-button:hover, .voltar-btn:hover {
-      background-color: var(--secondary-color);
-    }
-    .logout-button { right: 20px; }
-    .voltar-btn { left: 20px; }
-    
-    /* Perfil do Usuário */
-    .profile-card {
-      background-color: #fff;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      padding: 20px;
+    /* Perfil */
+    .profile-header {
       text-align: center;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
     }
-    .profile-card img {
-      width: 100px;
-      height: 100px;
+    
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       object-fit: cover;
-      border: 2px solid var(--primary-color);
+      border: 3px solid var(--primary-color);
+      margin-bottom: 1rem;
     }
-    .profile-card h2 { margin-top: 10px; }
-    .profile-card p { font-size: 0.9rem; color: var(--text-color); }
     
-    /* Páginas de Perfil */
-    #other-profile-page { display: none; margin-bottom: 20px; }
-    #other-profile-page .profile-card { margin-bottom: 10px; }
-    #profile-page { display: none; }
+    .profile-name {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+    }
     
-    /* Chat */
-    #chat-section { display: none; }
-    #chat-container { display: flex; gap: 20px; }
-    #chat-list { width: 30%; border: 1px solid var(--border-color); border-radius: 4px; padding: 10px; max-height: 400px; overflow-y: auto; }
-    #chat-window { width: 70%; border: 1px solid var(--border-color); border-radius: 4px; padding: 10px; max-height: 400px; overflow-y: auto; }
-    #chat-messages { margin-bottom: 10px; }
+    .profile-bio {
+      color: var(--text-light);
+      max-width: 600px;
+      margin: 0 auto 1rem;
+    }
     
-    /* Rodapé */
-    footer {
-      background-color: var(--primary-color);
-      color: #fff;
-      padding: 20px;
+    .profile-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .profile-stat {
       text-align: center;
-      border-radius: 4px;
-      margin-top: 20px;
     }
-    footer a { color: #fff; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
+    
+    .profile-stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+    
+    .profile-stat-label {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+    
+    /* Breadcrumbs */
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 1rem 0;
+      font-size: 0.875rem;
+    }
+    
+    .breadcrumbs a {
+      color: var(--text-light);
+    }
+    
+    .breadcrumbs a:hover {
+      color: var(--primary-color);
+    }
+    
+    .breadcrumbs .separator {
+      color: var(--text-light);
+    }
     
     /* Responsividade */
-    @media (max-width: 600px) {
-      .nav-bar .nav-center input { width: 100px; }
-      .feed-section { grid-template-columns: 1fr; }
+    @media (max-width: 992px) {
+      .feed-section {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .header-content {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 0.5rem;
+      }
+      
+      .nav-links.active {
+        display: flex;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      .profile-stats {
+        gap: 1rem;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .feed-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-content {
+        margin: 1rem auto;
+      }
+      
+      .profile-stats {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Cabeçalho Inicial -->
-    <header class="login-header" id="title">
-      <h1>Site de Postagens</h1>
-    </header>
-    
-    <!-- Tela Inicial -->
-    <section id="home-screen" class="home-screen">
-      <h1>Bem-vindo!</h1>
-      <p>Compartilhe suas imagens, vídeos e pensamentos.</p>
-      <div>
-        <button onclick="showLoginForm()">Login</button>
-        <button onclick="showRegisterForm()">Cadastro</button>
-      </div>
-    </section>
-    
-    <!-- Área de Autenticação -->
-    <section id="auth-section" style="display: none;">
-      <div id="login-form" class="auth-form">
-        <h2>Login</h2>
-        <form onsubmit="handleLogin(event)">
-          <label for="login-username">Nome de usuário:</label>
-          <input type="text" id="login-username" required>
-          <label for="login-password">Senha:</label>
-          <input type="password" id="login-password" required>
-          <button type="submit">Entrar</button>
-        </form>
-        <p id="login-error" class="error-message" style="display: none;">Usuário ou senha incorretos!</p>
-        <button onclick="showRegisterForm()">Criar uma conta</button>
-      </div>
-      <div id="register-form" class="auth-form" style="display: none;">
-        <h2>Cadastro</h2>
-        <form onsubmit="handleRegister(event)">
-          <label for="register-username">Nome de usuário:</label>
-          <input type="text" id="register-username" required>
-          <label for="register-password">Senha:</label>
-          <input type="password" id="register-password" required>
-          <button type="submit">Cadastrar</button>
-        </form>
-        <button onclick="showLoginForm()">Já tenho uma conta</button>
-      </div>
-    </section>
-    
-    <!-- Área Inicial após Login -->
-    <section id="profile-section" style="display: none;">
-      <h2>Bem-vindo, <span id="profile-username"></span>!</h2>
-      <button onclick="showPostSection()">Ir para o Feed</button>
-    </section>
-    
-    <!-- Área de Postagens -->
-    <section id="post-section" style="display: none;">
-      <button class="logout-button" onclick="logout()">Logout</button>
-      <!-- Barra de Navegação -->
-      <nav class="nav-bar">
-        <div class="nav-left">
-          <h2>Site de Postagens</h2>
+  <!-- Cabeçalho -->
+  <header>
+    <div class="container header-content">
+      <a href="#" class="logo" onclick="showHomePage(event)">
+        <i class="fas fa-share-alt"></i> Comunidade Compartilha
+      </a>
+      
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i class="fas fa-bars"></i>
+      </button>
+      
+      <nav class="nav-links" id="main-nav">
+        <a href="#" onclick="showFeedPage(event)">
+          <i class="fas fa-home"></i> Início
+        </a>
+        <a href="#" onclick="showExplorePage(event)">
+          <i class="fas fa-compass"></i> Explorar
+        </a>
+        <div id="auth-links">
+          <a href="#" onclick="showLoginForm(event)">
+            <i class="fas fa-sign-in-alt"></i> Entrar
+          </a>
+          <a href="#" onclick="showRegisterForm(event)">
+            <i class="fas fa-user-plus"></i> Cadastrar
+          </a>
         </div>
-        <div class="nav-center">
-          <input type="text" id="search-input" placeholder="Pesquisar perfis">
-          <div id="search-results"></div>
-        </div>
-        <div class="nav-right">
-          <button onclick="showFeed()">Início</button>
-          <button onclick="showNewPostModal()">Novo Post</button>
-          <button onclick="showNewStoryModal()">Minha Story</button>
-          <button onclick="showProfilePage()">Perfil</button>
-          <button onclick="showChatSection()">Chat</button>
+        <div id="user-links" style="display: none;">
+          <a href="#" onclick="showProfilePage(event)">
+            <i class="fas fa-user"></i> Perfil
+          </a>
+          <a href="#" onclick="logout(event)">
+            <i class="fas fa-sign-out-alt"></i> Sair
+          </a>
         </div>
       </nav>
-      <!-- Conteúdo: Stories e Feed -->
-      <div id="content-section">
-        <!-- Área de Stories -->
-        <section id="stories-section" class="stories-section">
-          <!-- Item para adicionar nova story -->
-          <div class="story-item" onclick="showNewStoryModal()">
-            <div class="add-story"><span>+</span></div>
-            <p>Minha Story</p>
-          </div>
-          <!-- As stories serão carregadas dinamicamente -->
-          <div id="stories-container"></div>
-        </section>
-        <!-- Feed de Postagens -->
-        <section id="feed-section" class="feed-section"></section>
-      </div>
-      <!-- Modal para Novo Post -->
-      <div id="new-post-modal" class="modal">
-        <div class="modal-content">
-          <span class="close" onclick="closeNewPostModal()">&times;</span>
-          <h2>Novo Post</h2>
-          <form id="new-post-form" onsubmit="handlePost(event)">
-            <label for="post-title">Título da Postagem:</label>
-            <input type="text" id="post-title" placeholder="Digite o título da postagem">
-            <label for="post-text">Texto (Opcional):</label>
-            <textarea id="post-text" rows="4" placeholder="Escreva algo..."></textarea>
-            <label for="post-media">Upload de Imagem ou Vídeo (Opcional):</label>
-            <input type="file" id="post-media" accept="image/*,video/*">
-            <label for="post-url">URL de Imagem ou Vídeo (Opcional):</label>
-            <input type="text" id="post-url" placeholder="Cole o link da imagem ou vídeo">
-            <label for="post-link">Link Adicional (Opcional):</label>
-            <input type="text" id="post-link" placeholder="Cole um link para mais informações">
-            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-              <button type="submit">Publicar</button>
-              <button type="button" onclick="clearPostForm(); closeNewPostModal();">Cancelar</button>
-            </div>
-          </form>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="container">
+    <!-- Página Inicial (Feed Público) -->
+    <section id="home-page">
+      <div class="hero">
+        <h1>Compartilhe suas experiências</h1>
+        <p>Conecte-se com outras pessoas e compartilhe momentos, ideias e conhecimentos.</p>
+        <div>
+          <button class="btn btn-primary" onclick="showRegisterForm(event)">
+            <i class="fas fa-user-plus"></i> Criar conta
+          </button>
+          <button class="btn btn-outline" style="color: white; border-color: white;" onclick="showLoginForm(event)">
+            <i class="fas fa-sign-in-alt"></i> Entrar
+          </button>
         </div>
       </div>
-      <!-- Modal para Nova Story -->
-      <div id="new-story-modal" class="modal">
-        <div class="modal-content">
-          <span class="close" onclick="closeNewStoryModal()">&times;</span>
-          <h2>Nova Story</h2>
-          <form id="new-story-form" onsubmit="handleNewStory(event)">
-            <label for="story-media">Selecione uma imagem:</label>
-            <input type="file" id="story-media" accept="image/*" required>
-            <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-              <button type="submit">Publicar</button>
-              <button type="button" onclick="closeNewStoryModal()">Cancelar</button>
-            </div>
-          </form>
-        </div>
-      </div>
+      
+      <h2>Postagens recentes</h2>
+      <div id="public-feed" class="feed-section"></div>
     </section>
     
-    <!-- Página de Perfil do Usuário Logado -->
-    <section id="profile-page">
-      <button class="logout-button" onclick="logout()">Logout</button>
-      <button class="voltar-btn" onclick="showFeed()">Início</button>
-      <div class="profile-card">
-        <img id="profile-picture" src="https://via.placeholder.com/100" alt="Foto de Perfil">
-        <h2 id="profile-username-display"></h2>
-        <p id="profile-bio">Sem bio definida.</p>
-        <button onclick="showEditProfileModal()">Editar Perfil</button>
+    <!-- Página de Feed (após login) -->
+    <section id="feed-page" style="display: none;">
+      <div class="breadcrumbs">
+        <a href="#" onclick="showHomePage(event)">Início</a>
+        <span class="separator">/</span>
+        <span>Feed</span>
       </div>
-      <h3>Minhas Postagens</h3>
+      
+      <div class="flex" style="justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+        <h2>Seu Feed</h2>
+        <button class="btn btn-primary btn-sm" onclick="showNewPostModal()">
+          <i class="fas fa-plus"></i> Nova postagem
+        </button>
+      </div>
+      
+      <div id="stories-section" class="stories-section">
+        <div class="story-item" onclick="showNewStoryModal()">
+          <div class="add-story">
+            <i class="fas fa-plus"></i>
+          </div>
+          <span class="story-username">Sua Story</span>
+        </div>
+        <div id="stories-container"></div>
+      </div>
+      
+      <div id="feed-section" class="feed-section"></div>
+    </section>
+    
+    <!-- Página de Exploração -->
+    <section id="explore-page" style="display: none;">
+      <div class="breadcrumbs">
+        <a href="#" onclick="showHomePage(event)">Início</a>
+        <span class="separator">/</span>
+        <span>Explorar</span>
+      </div>
+      
+      <h2>Descubra novas postagens</h2>
+      <div id="explore-feed" class="feed-section"></div>
+    </section>
+    
+    <!-- Página de Perfil do Usuário -->
+    <section id="profile-page" style="display: none;">
+      <div class="breadcrumbs">
+        <a href="#" onclick="showHomePage(event)">Início</a>
+        <span class="separator">/</span>
+        <span>Perfil</span>
+      </div>
+      
+      <div class="profile-header">
+        <img id="profile-avatar" src="https://via.placeholder.com/120" alt="Foto de perfil" class="profile-avatar">
+        <h2 id="profile-username" class="profile-name"></h2>
+        <p id="profile-bio" class="profile-bio">Sem biografia definida.</p>
+        
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <div class="profile-stat-value" id="post-count">0</div>
+            <div class="profile-stat-label">Postagens</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-value" id="story-count">0</div>
+            <div class="profile-stat-label">Stories</div>
+          </div>
+        </div>
+        
+        <button class="btn btn-outline" onclick="showEditProfileModal()">
+          <i class="fas fa-edit"></i> Editar perfil
+        </button>
+      </div>
+      
+      <h3>Minhas postagens</h3>
       <div id="user-posts" class="feed-section"></div>
     </section>
     
     <!-- Página de Perfil de Outro Usuário -->
-    <section id="other-profile-page">
-      <button class="logout-button" onclick="logout()">Logout</button>
-      <button class="voltar-btn" onclick="showFeed()">Início</button>
-      <div class="profile-card" id="other-profile-card"></div>
-      <div id="other-story-container" class="stories-section"></div>
+    <section id="other-profile-page" style="display: none;">
+      <div class="breadcrumbs">
+        <a href="#" onclick="showHomePage(event)">Início</a>
+        <span class="separator">/</span>
+        <span id="other-profile-breadcrumb">Perfil</span>
+      </div>
+      
+      <div class="profile-header">
+        <img id="other-profile-avatar" src="https://via.placeholder.com/120" alt="Foto de perfil" class="profile-avatar">
+        <h2 id="other-profile-username" class="profile-name"></h2>
+        <p id="other-profile-bio" class="profile-bio"></p>
+        
+        <div class="profile-stats">
+          <div class="profile-stat">
+            <div class="profile-stat-value" id="other-post-count">0</div>
+            <div class="profile-stat-label">Postagens</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-value" id="other-story-count">0</div>
+            <div class="profile-stat-label">Stories</div>
+          </div>
+        </div>
+        
+        <button id="follow-button" class="btn btn-primary" style="display: none;">
+          <i class="fas fa-user-plus"></i> Seguir
+        </button>
+      </div>
+      
+      <div id="other-stories-section" class="stories-section"></div>
+      
       <h3>Postagens</h3>
       <div id="other-user-posts" class="feed-section"></div>
     </section>
     
-    <!-- Seção de Chat (placeholder para integração futura) -->
-    <section id="chat-section">
-      <button class="logout-button" onclick="logout()">Logout</button>
-      <button class="voltar-btn" onclick="showFeed()">Início</button>
-      <h2>Chats</h2>
-      <button onclick="showNewChatModal()">Nova Conversa</button>
-      <div id="chat-container">
-        <div id="chat-list"></div>
-        <div id="chat-window">
-          <div id="chat-messages"></div>
-          <input type="text" id="chat-input" placeholder="Digite sua mensagem...">
-          <button onclick="sendMessage()">Enviar</button>
+    <!-- Seção de Autenticação -->
+    <section id="auth-section" style="display: none;">
+      <div class="breadcrumbs">
+        <a href="#" onclick="showHomePage(event)">Início</a>
+        <span class="separator">/</span>
+        <span id="auth-breadcrumb">Autenticação</span>
+      </div>
+      
+      <div id="login-form" class="card" style="max-width: 500px; margin: 0 auto;">
+        <div class="card-body">
+          <h2 style="text-align: center; margin-bottom: 1.5rem;">Entrar na conta</h2>
+          
+          <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+              <label for="login-username" class="form-label">Nome de usuário</label>
+              <input type="text" id="login-username" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="login-password" class="form-label">Senha</label>
+              <input type="password" id="login-password" class="form-control" required>
+            </div>
+            
+            <div id="login-error" class="alert alert-danger" style="display: none;"></div>
+            
+            <div class="form-group" style="margin-top: 1.5rem;">
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+              </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 1rem;">
+              <p>Não tem uma conta? <a href="#" onclick="showRegisterForm(event)">Cadastre-se</a></p>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div id="register-form" class="card" style="max-width: 500px; margin: 0 auto; display: none;">
+        <div class="card-body">
+          <h2 style="text-align: center; margin-bottom: 1.5rem;">Criar nova conta</h2>
+          
+          <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group">
+              <label for="register-username" class="form-label">Nome de usuário</label>
+              <input type="text" id="register-username" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+              <label for="register-password" class="form-label">Senha</label>
+              <input type="password" id="register-password" class="form-control" required>
+            </div>
+            
+            <div id="register-error" class="alert alert-danger" style="display: none;"></div>
+            <div id="register-success" class="alert alert-success" style="display: none;"></div>
+            
+            <div class="form-group" style="margin-top: 1.5rem;">
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                <i class="fas fa-user-plus"></i> Cadastrar
+              </button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 1rem;">
+              <p>Já tem uma conta? <a href="#" onclick="showLoginForm(event)">Faça login</a></p>
+            </div>
+          </form>
         </div>
       </div>
     </section>
-    
-    <!-- Modal para Novo Chat -->
-    <div id="new-chat-modal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeNewChatModal()">&times;</span>
-        <h2>Nova Conversa</h2>
-        <label for="new-chat-user">Nome de usuário:</label>
-        <input type="text" id="new-chat-user" placeholder="Digite o nome do usuário">
-        <button onclick="createNewChat()">Criar Conversa</button>
+  </main>
+
+  <!-- Modais -->
+  <!-- Modal para Novo Post -->
+  <div id="new-post-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Nova postagem</h3>
+        <button class="modal-close" onclick="closeNewPostModal()">&times;</button>
       </div>
-    </div>
-    
-    <!-- Modal para Editar Perfil -->
-    <div id="edit-profile-modal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeEditProfileModal()">&times;</span>
-        <h2>Editar Perfil</h2>
-        <form id="edit-profile-form" onsubmit="handleProfileUpdate(event)">
-          <label for="edit-bio">Bio:</label>
-          <textarea id="edit-bio" rows="3" placeholder="Escreva sobre você..."></textarea>
-          <label for="edit-profile-picture">Foto de Perfil (Opcional):</label>
-          <input type="file" id="edit-profile-picture" accept="image/*">
-          <div style="display: flex; justify-content: space-between; margin-top: 10px;">
-            <button type="submit">Atualizar</button>
-            <button type="button" onclick="closeEditProfileModal()">Cancelar</button>
+      
+      <div class="modal-body">
+        <form id="new-post-form" onsubmit="handlePost(event)">
+          <div class="form-group">
+            <label for="post-title" class="form-label">Título</label>
+            <input type="text" id="post-title" class="form-control" placeholder="Dê um título à sua postagem">
+          </div>
+          
+          <div class="form-group">
+            <label for="post-text" class="form-label">Texto</label>
+            <textarea id="post-text" class="form-control" placeholder="Escreva algo interessante..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="post-media" class="form-label">Mídia (imagem ou vídeo)</label>
+            <input type="file" id="post-media" class="form-control" accept="image/*,video/*">
+          </div>
+          
+          <div class="form-group">
+            <label for="post-url" class="form-label">Ou cole uma URL de imagem/vídeo</label>
+            <input type="text" id="post-url" class="form-control" placeholder="https://example.com/image.jpg">
+          </div>
+          
+          <div class="form-group">
+            <label for="post-link" class="form-label">Link adicional (opcional)</label>
+            <input type="text" id="post-link" class="form-control" placeholder="https://example.com">
           </div>
         </form>
       </div>
-    </div>
-    
-    <!-- Modal para Visualização de Story (Story Viewer) -->
-    <div id="story-modal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeStoryModal()">&times;</span>
-        <button id="prev-story" onclick="prevStory()">&#10094;</button>
-        <img id="story-modal-img" src="" alt="Story">
-        <button id="next-story" onclick="nextStory()">&#10095;</button>
+      
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeNewPostModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="handlePost(event)">Publicar</button>
       </div>
     </div>
-    
-    <!-- Rodapé -->
-    <footer>
-      <p>Seu <a href="mailto:brawlstars14062008@gmail.com">feedback</a> é importante!</p>
-      <p><a href="mailto:brawlstars14062008@gmail.com">E-Mail</a> | <a href="tel:+5581999994498">Telefone</a></p>
-    </footer>
   </div>
+  
+  <!-- Modal para Nova Story -->
+  <div id="new-story-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Nova Story</h3>
+        <button class="modal-close" onclick="closeNewStoryModal()">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="new-story-form" onsubmit="handleNewStory(event)">
+          <div class="form-group">
+            <label for="story-media" class="form-label">Selecione uma imagem</label>
+            <input type="file" id="story-media" class="form-control" accept="image/*" required>
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeNewStoryModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="handleNewStory(event)">Publicar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal para Editar Perfil -->
+  <div id="edit-profile-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Editar perfil</h3>
+        <button class="modal-close" onclick="closeEditProfileModal()">&times;</button>
+      </div>
+      
+      <div class="modal-body">
+        <form id="edit-profile-form" onsubmit="handleProfileUpdate(event)">
+          <div class="form-group">
+            <label for="edit-bio" class="form-label">Biografia</label>
+            <textarea id="edit-bio" class="form-control" placeholder="Conte um pouco sobre você..."></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="edit-profile-picture" class="form-label">Foto de perfil</label>
+            <input type="file" id="edit-profile-picture" class="form-control" accept="image/*">
+          </div>
+        </form>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeEditProfileModal()">Cancelar</button>
+        <button class="btn btn-primary" onclick="handleProfileUpdate(event)">Salvar</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal para Visualização de Story -->
+  <div id="story-modal" class="modal">
+    <div class="modal-content" style="background: transparent; box-shadow: none;">
+      <button class="story-close" onclick="closeStoryModal()">&times;</button>
+      
+      <div class="story-viewer">
+        <button class="story-nav story-prev" onclick="prevStory()">&#10094;</button>
+        <img id="story-modal-img" src="" alt="Story">
+        <button class="story-nav story-next" onclick="nextStory()">&#10095;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rodapé -->
+  <footer style="background-color: var(--primary-color); color: white; padding: 2rem 0; margin-top: 3rem;">
+    <div class="container" style="text-align: center;">
+      <p style="margin-bottom: 1rem;">Comunidade Compartilha &copy; 2023</p>
+      <div style="display: flex; justify-content: center; gap: 1.5rem;">
+        <a href="#" style="color: white;"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" style="color: white;"><i class="fab fa-twitter"></i></a>
+        <a href="#" style="color: white;"><i class="fab fa-instagram"></i></a>
+        <a href="#" style="color: white;"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+      <p style="margin-top: 1rem; font-size: 0.875rem;">
+        <a href="mailto:contato@compartilha.com" style="color: white;">Contato</a> | 
+        <a href="#" style="color: white;">Termos de uso</a> | 
+        <a href="#" style="color: white;">Política de privacidade</a>
+      </p>
+    </div>
+  </footer>
 
   <script>
     // Inicializa os dados no localStorage se não existirem
@@ -562,7 +1046,17 @@
         localStorage.setItem('users', JSON.stringify([]));
       }
       if (!localStorage.getItem('posts')) {
-        localStorage.setItem('posts', JSON.stringify([]));
+        localStorage.setItem('posts', JSON.stringify([
+          {
+            id: 1,
+            username: "admin",
+            title: "Bem-vindo ao Comunidade Compartilha!",
+            text: "Esta é uma postagem de exemplo para demonstrar o funcionamento do site. Sinta-se à vontade para explorar e criar suas próprias postagens!",
+            media: "",
+            link: "",
+            timestamp: new Date().toLocaleString()
+          }
+        ]));
       }
       if (!localStorage.getItem('stories')) {
         localStorage.setItem('stories', JSON.stringify([]));
@@ -572,49 +1066,273 @@
     // Chamada para inicializar os dados
     initializeLocalStorage();
 
+    // Estado global
     let loggedInUser = localStorage.getItem('loggedInUser');
     let currentStoryArray = [];
     let currentStoryIndex = 0;
     let storyTimer;
 
-    // Se o usuário já estiver logado, exibe a área inicial
-    if (loggedInUser) {
-      document.getElementById('home-screen').style.display = 'none';
-      document.getElementById('profile-section').style.display = 'block';
-      document.getElementById('profile-username').textContent = loggedInUser;
+    // Atualiza a interface com base no estado de login
+    function updateUI() {
+      const authLinks = document.getElementById('auth-links');
+      const userLinks = document.getElementById('user-links');
+      
+      if (loggedInUser) {
+        authLinks.style.display = 'none';
+        userLinks.style.display = 'flex';
+        document.getElementById('profile-username').textContent = loggedInUser;
+      } else {
+        authLinks.style.display = 'flex';
+        userLinks.style.display = 'none';
+      }
+    }
+
+    // Inicializa a UI
+    updateUI();
+    showHomePage();
+    loadPublicFeed();
+
+    /* ---------- Navegação ---------- */
+    function showHomePage(e) {
+      if (e) e.preventDefault();
+      hideAllSections();
+      document.getElementById('home-page').style.display = 'block';
+      document.title = "Comunidade Compartilha | Página Inicial";
+    }
+
+    function showFeedPage(e) {
+      if (e) e.preventDefault();
+      
+      if (!loggedInUser) {
+        showLoginForm();
+        return;
+      }
+      
+      hideAllSections();
+      document.getElementById('feed-page').style.display = 'block';
+      document.title = "Comunidade Compartilha | Seu Feed";
+      displayPosts();
+      displayStories();
+    }
+
+    function showExplorePage(e) {
+      if (e) e.preventDefault();
+      hideAllSections();
+      document.getElementById('explore-page').style.display = 'block';
+      document.title = "Comunidade Compartilha | Explorar";
+      loadExploreFeed();
+    }
+
+    function showProfilePage(e) {
+      if (e) e.preventDefault();
+      
+      if (!loggedInUser) {
+        showLoginForm();
+        return;
+      }
+      
+      hideAllSections();
+      document.getElementById('profile-page').style.display = 'block';
+      document.title = "Comunidade Compartilha | Seu Perfil";
+      updateProfileDisplay();
+      displayUserPosts();
+    }
+
+    function showOtherProfilePage(username) {
+      hideAllSections();
+      document.getElementById('other-profile-page').style.display = 'block';
+      document.title = `Comunidade Compartilha | Perfil de ${username}`;
+      
+      // Atualiza breadcrumb
+      document.getElementById('other-profile-breadcrumb').textContent = username;
+      
+      const users = JSON.parse(localStorage.getItem('users'));
+      const user = users.find(u => u.username === username);
+      
+      if (user) {
+        document.getElementById('other-profile-username').textContent = username;
+        document.getElementById('other-profile-bio').textContent = user.bio || "Sem biografia definida.";
+        document.getElementById('other-profile-avatar').src = user.profile_picture || "https://via.placeholder.com/120";
+        
+        // Mostra o botão de seguir apenas se for outro usuário
+        const followButton = document.getElementById('follow-button');
+        if (loggedInUser && loggedInUser !== username) {
+          followButton.style.display = 'block';
+          // Verifica se já está seguindo
+          const currentUser = users.find(u => u.username === loggedInUser);
+          if (currentUser.following && currentUser.following.includes(username)) {
+            followButton.innerHTML = '<i class="fas fa-user-check"></i> Seguindo';
+            followButton.classList.add('btn-outline');
+            followButton.classList.remove('btn-primary');
+          } else {
+            followButton.innerHTML = '<i class="fas fa-user-plus"></i> Seguir';
+            followButton.classList.add('btn-primary');
+            followButton.classList.remove('btn-outline');
+          }
+        } else {
+          followButton.style.display = 'none';
+        }
+      }
+
+      // Carrega stories do usuário
+      const stories = JSON.parse(localStorage.getItem('stories'));
+      const userStories = stories.filter(story => story.username === username);
+      const otherStoryContainer = document.getElementById('other-stories-section');
+      otherStoryContainer.innerHTML = "";
+      
+      if (userStories.length > 0) {
+        document.getElementById('other-story-count').textContent = userStories.length;
+        
+        userStories.forEach(story => {
+          const storyItem = document.createElement('div');
+          storyItem.classList.add('story-item');
+          storyItem.innerHTML = `
+            <img src="${story.media}" alt="Story de ${story.username}" class="story-avatar">
+            <span class="story-username">${story.username}</span>
+          `;
+          storyItem.onclick = () => openStoryViewer(username, 0);
+          otherStoryContainer.appendChild(storyItem);
+        });
+      } else {
+        document.getElementById('other-story-count').textContent = "0";
+        otherStoryContainer.innerHTML = "<p style='padding: 1rem;'>Nenhuma story encontrada.</p>";
+      }
+
+      // Carrega posts do usuário
+      const posts = JSON.parse(localStorage.getItem('posts'));
+      const userPosts = posts.filter(post => post.username === username);
+      const otherUserPostsContainer = document.getElementById('other-user-posts');
+      otherUserPostsContainer.innerHTML = "";
+      
+      if (userPosts.length === 0) {
+        document.getElementById('other-post-count').textContent = "0";
+        otherUserPostsContainer.innerHTML = "<p style='text-align:center; padding: 2rem;'>Nenhuma postagem encontrada.</p>";
+      } else {
+        document.getElementById('other-post-count').textContent = userPosts.length;
+        
+        // Ordena posts por data (mais recentes primeiro)
+        userPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        userPosts.forEach(post => {
+          const postItem = document.createElement('div');
+          postItem.classList.add('feed-item');
+          let mediaHTML = "";
+          
+          if (post.media) {
+            if (post.media.startsWith("data:video") || post.media.endsWith(".mp4") || post.media.endsWith(".webm")) {
+              mediaHTML = `
+                <video controls class="feed-media">
+                  <source src="${post.media}" type="${post.media.startsWith('data:') ? 
+                    post.media.substring(5, post.media.indexOf(';')) : 'video/mp4'}">
+                </video>
+              `;
+            } else {
+              mediaHTML = `<img src="${post.media}" alt="Post Media" class="feed-media">`;
+            }
+          }
+          
+          let deleteButton = "";
+          if (post.username === loggedInUser) {
+            deleteButton = `
+              <button class="btn btn-danger btn-sm" onclick="deletePost(${post.id})" style="margin-left: auto;">
+                <i class="fas fa-trash"></i> Excluir
+              </button>
+            `;
+          }
+          
+          postItem.innerHTML = `
+            ${mediaHTML}
+            <div class="feed-content">
+              <div class="feed-meta">
+                <span class="feed-author">${post.username}</span>
+                <span class="feed-date">${post.timestamp}</span>
+              </div>
+              <h3 class="feed-title">${post.title}</h3>
+              <p class="feed-text">${post.text}</p>
+              ${post.link ? `<a href="${post.link}" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-external-link-alt"></i> Ver link</a>` : ""}
+              <div class="feed-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-heart"></i> Curtir
+                </button>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-comment"></i> Comentar
+                </button>
+                ${deleteButton}
+              </div>
+            </div>
+          `;
+          otherUserPostsContainer.appendChild(postItem);
+        });
+      }
+    }
+
+    function hideAllSections() {
+      document.getElementById('home-page').style.display = 'none';
+      document.getElementById('feed-page').style.display = 'none';
+      document.getElementById('explore-page').style.display = 'none';
+      document.getElementById('profile-page').style.display = 'none';
+      document.getElementById('other-profile-page').style.display = 'none';
+      document.getElementById('auth-section').style.display = 'none';
+    }
+
+    function toggleMobileMenu() {
+      const nav = document.getElementById('main-nav');
+      nav.classList.toggle('active');
     }
 
     /* ---------- Autenticação ---------- */
-    function showLoginForm() {
+    function showLoginForm(e) {
+      if (e) e.preventDefault();
+      hideAllSections();
       document.getElementById('auth-section').style.display = 'block';
       document.getElementById('login-form').style.display = 'block';
       document.getElementById('register-form').style.display = 'none';
+      document.getElementById('auth-breadcrumb').textContent = 'Login';
+      document.title = "Comunidade Compartilha | Entrar";
     }
 
-    function showRegisterForm() {
+    function showRegisterForm(e) {
+      if (e) e.preventDefault();
+      hideAllSections();
       document.getElementById('auth-section').style.display = 'block';
       document.getElementById('login-form').style.display = 'none';
       document.getElementById('register-form').style.display = 'block';
+      document.getElementById('auth-breadcrumb').textContent = 'Cadastro';
+      document.title = "Comunidade Compartilha | Cadastrar";
     }
 
-    function handleRegister(event) {
-      event.preventDefault();
+    function handleRegister(e) {
+      e.preventDefault();
       const username = document.getElementById('register-username').value.trim();
       const password = document.getElementById('register-password').value.trim();
+      const errorElement = document.getElementById('register-error');
+      const successElement = document.getElementById('register-success');
       
-      if (!username || !password) { 
-        alert("Preencha todos os campos!"); 
-        return; 
+      errorElement.style.display = 'none';
+      successElement.style.display = 'none';
+      
+      // Validação simples
+      if (username.length < 3) {
+        errorElement.textContent = "O nome de usuário deve ter pelo menos 3 caracteres.";
+        errorElement.style.display = 'block';
+        return;
       }
-
+      
+      if (password.length < 6) {
+        errorElement.textContent = "A senha deve ter pelo menos 6 caracteres.";
+        errorElement.style.display = 'block';
+        return;
+      }
+      
       const users = JSON.parse(localStorage.getItem('users'));
       
       // Verifica se o usuário já existe
       if (users.some(user => user.username === username)) {
-        alert("Nome de usuário já está em uso!");
+        errorElement.textContent = "Nome de usuário já está em uso!";
+        errorElement.style.display = 'block';
         return;
       }
-
+      
       // Adiciona o novo usuário
       const newUser = {
         username,
@@ -627,62 +1345,264 @@
       users.push(newUser);
       localStorage.setItem('users', JSON.stringify(users));
       
-      alert(`Cadastro bem-sucedido, ${username}!`);
-      showLoginForm();
+      successElement.textContent = `Cadastro bem-sucedido, ${username}! Faça login para continuar.`;
+      successElement.style.display = 'block';
+      
+      // Limpa o formulário
+      document.getElementById('register-username').value = "";
+      document.getElementById('register-password').value = "";
+      
+      // Mostra o formulário de login após 2 segundos
+      setTimeout(() => {
+        showLoginForm();
+      }, 2000);
     }
 
-    function handleLogin(event) {
-      event.preventDefault();
+    function handleLogin(e) {
+      e.preventDefault();
       const username = document.getElementById('login-username').value.trim();
       const password = document.getElementById('login-password').value.trim();
+      const errorElement = document.getElementById('login-error');
       
-      if (!username || !password) { 
-        alert("Preencha todos os campos!"); 
-        return; 
-      }
-
+      errorElement.style.display = 'none';
+      
       const users = JSON.parse(localStorage.getItem('users'));
       const user = users.find(u => u.username === username && u.password === password);
       
       if (user) {
         localStorage.setItem('loggedInUser', username);
         loggedInUser = username;
-        alert(`Login bem-sucedido, ${username}!`);
-        hideAllSections();
-        document.getElementById('profile-section').style.display = 'block';
-        document.getElementById('profile-username').textContent = loggedInUser;
+        updateUI();
+        
+        // Mostra feedback visual
+        const loginBtn = document.querySelector('#loginForm button[type="submit"]');
+        loginBtn.innerHTML = '<i class="fas fa-check"></i> Login bem-sucedido';
+        loginBtn.style.backgroundColor = '#4cc9f0';
+        
+        // Redireciona após 1 segundo
+        setTimeout(() => {
+          showFeedPage();
+        }, 1000);
       } else {
-        document.getElementById('login-error').style.display = 'block';
+        errorElement.textContent = "Usuário ou senha incorretos!";
+        errorElement.style.display = 'block';
       }
     }
 
-    function hideAllSections() {
-      document.getElementById('home-screen').style.display = 'none';
-      document.getElementById('auth-section').style.display = 'none';
-      document.getElementById('profile-section').style.display = 'none';
-      document.getElementById('post-section').style.display = 'none';
-      document.getElementById('profile-page').style.display = 'none';
-      document.getElementById('other-profile-page').style.display = 'none';
-      document.getElementById('chat-section').style.display = 'none';
-    }
-
-    function logout() {
+    function logout(e) {
+      if (e) e.preventDefault();
       localStorage.removeItem('loggedInUser');
       loggedInUser = null;
-      hideAllSections();
-      document.getElementById('home-screen').style.display = 'block';
-    }
-
-    function showPostSection() {
-      hideAllSections();
-      document.getElementById('post-section').style.display = 'block';
-      displayPosts();
-      displayStories();
+      updateUI();
+      showHomePage();
     }
     
     /* ---------- Posts ---------- */
-    function handlePost(event) {
-      event.preventDefault();
+    function loadPublicFeed() {
+      const posts = JSON.parse(localStorage.getItem('posts'));
+      const publicFeed = document.getElementById('public-feed');
+      publicFeed.innerHTML = "";
+      
+      if (posts.length === 0) {
+        publicFeed.innerHTML = "<p style='text-align:center; padding: 2rem;'>Nenhuma postagem pública encontrada.</p>";
+      } else {
+        // Ordena posts por data (mais recentes primeiro)
+        posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        // Limita a 12 posts na página inicial
+        const recentPosts = posts.slice(0, 12);
+        
+        recentPosts.forEach(post => {
+          const feedItem = document.createElement('div');
+          feedItem.classList.add('feed-item');
+          let mediaHTML = "";
+          
+          if (post.media) {
+            if (post.media.startsWith("data:video") || post.media.endsWith(".mp4") || post.media.endsWith(".webm")) {
+              mediaHTML = `
+                <video controls class="feed-media">
+                  <source src="${post.media}" type="${post.media.startsWith('data:') ? 
+                    post.media.substring(5, post.media.indexOf(';')) : 'video/mp4'}">
+                </video>
+              `;
+            } else {
+              mediaHTML = `<img src="${post.media}" alt="Post Media" class="feed-media">`;
+            }
+          }
+          
+          feedItem.innerHTML = `
+            ${mediaHTML}
+            <div class="feed-content">
+              <div class="feed-meta">
+                <span class="feed-author">${post.username}</span>
+                <span class="feed-date">${post.timestamp}</span>
+              </div>
+              <h3 class="feed-title">${post.title}</h3>
+              <p class="feed-text">${post.text}</p>
+              ${post.link ? `<a href="${post.link}" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-external-link-alt"></i> Ver link</a>` : ""}
+              <div class="feed-actions">
+                <button class="btn btn-outline btn-sm" onclick="showLoginForm(event)">
+                  <i class="fas fa-heart"></i> Curtir
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="showLoginForm(event)">
+                  <i class="fas fa-comment"></i> Comentar
+                </button>
+              </div>
+            </div>
+          `;
+          publicFeed.appendChild(feedItem);
+        });
+      }
+    }
+
+    function loadExploreFeed() {
+      const posts = JSON.parse(localStorage.getItem('posts'));
+      const exploreFeed = document.getElementById('explore-feed');
+      exploreFeed.innerHTML = "";
+      
+      if (posts.length === 0) {
+        exploreFeed.innerHTML = "<p style='text-align:center; padding: 2rem;'>Nenhuma postagem encontrada.</p>";
+      } else {
+        // Ordena posts por data (mais recentes primeiro)
+        posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        posts.forEach(post => {
+          const feedItem = document.createElement('div');
+          feedItem.classList.add('feed-item');
+          let mediaHTML = "";
+          
+          if (post.media) {
+            if (post.media.startsWith("data:video") || post.media.endsWith(".mp4") || post.media.endsWith(".webm")) {
+              mediaHTML = `
+                <video controls class="feed-media">
+                  <source src="${post.media}" type="${post.media.startsWith('data:') ? 
+                    post.media.substring(5, post.media.indexOf(';')) : 'video/mp4'}">
+                </video>
+              `;
+            } else {
+              mediaHTML = `<img src="${post.media}" alt="Post Media" class="feed-media">`;
+            }
+          }
+          
+          const actionButtons = loggedInUser ? `
+            <button class="btn btn-outline btn-sm">
+              <i class="fas fa-heart"></i> Curtir
+            </button>
+            <button class="btn btn-outline btn-sm">
+              <i class="fas fa-comment"></i> Comentar
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="showOtherProfilePage('${post.username}')">
+              <i class="fas fa-user"></i> Perfil
+            </button>
+          ` : `
+            <button class="btn btn-outline btn-sm" onclick="showLoginForm(event)">
+              <i class="fas fa-heart"></i> Curtir
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="showLoginForm(event)">
+              <i class="fas fa-comment"></i> Comentar
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="showLoginForm(event)">
+              <i class="fas fa-user"></i> Perfil
+            </button>
+          `;
+          
+          feedItem.innerHTML = `
+            ${mediaHTML}
+            <div class="feed-content">
+              <div class="feed-meta">
+                <span class="feed-author">${post.username}</span>
+                <span class="feed-date">${post.timestamp}</span>
+              </div>
+              <h3 class="feed-title">${post.title}</h3>
+              <p class="feed-text">${post.text}</p>
+              ${post.link ? `<a href="${post.link}" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-external-link-alt"></i> Ver link</a>` : ""}
+              <div class="feed-actions">
+                ${actionButtons}
+              </div>
+            </div>
+          `;
+          exploreFeed.appendChild(feedItem);
+        });
+      }
+    }
+
+    function displayPosts() {
+      const posts = JSON.parse(localStorage.getItem('posts'));
+      const feedSection = document.getElementById('feed-section');
+      feedSection.innerHTML = "";
+      
+      if (posts.length === 0) {
+        feedSection.innerHTML = "<p style='text-align:center; padding: 2rem;'>Nenhuma postagem encontrada. Seja o primeiro a postar!</p>";
+      } else {
+        // Ordena posts por data (mais recentes primeiro)
+        posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        posts.forEach(post => {
+          const feedItem = document.createElement('div');
+          feedItem.classList.add('feed-item');
+          let mediaHTML = "";
+          
+          if (post.media) {
+            if (post.media.startsWith("data:video") || post.media.endsWith(".mp4") || post.media.endsWith(".webm")) {
+              mediaHTML = `
+                <video controls class="feed-media">
+                  <source src="${post.media}" type="${post.media.startsWith('data:') ? 
+                    post.media.substring(5, post.media.indexOf(';')) : 'video/mp4'}">
+                </video>
+              `;
+            } else {
+              mediaHTML = `<img src="${post.media}" alt="Post Media" class="feed-media">`;
+            }
+          }
+          
+          let deleteButton = "";
+          if (post.username === loggedInUser) {
+            deleteButton = `
+              <button class="btn btn-danger btn-sm" onclick="deletePost(${post.id})" style="margin-left: auto;">
+                <i class="fas fa-trash"></i> Excluir
+              </button>
+            `;
+          }
+          
+          feedItem.innerHTML = `
+            ${mediaHTML}
+            <div class="feed-content">
+              <div class="feed-meta">
+                <span class="feed-author">${post.username}</span>
+                <span class="feed-date">${post.timestamp}</span>
+              </div>
+              <h3 class="feed-title">${post.title}</h3>
+              <p class="feed-text">${post.text}</p>
+              ${post.link ? `<a href="${post.link}" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-external-link-alt"></i> Ver link</a>` : ""}
+              <div class="feed-actions">
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-heart"></i> Curtir
+                </button>
+                <button class="btn btn-outline btn-sm">
+                  <i class="fas fa-comment"></i> Comentar
+                </button>
+                <button class="btn btn-outline btn-sm" onclick="showOtherProfilePage('${post.username}')">
+                  <i class="fas fa-user"></i> Perfil
+                </button>
+                ${deleteButton}
+              </div>
+            </div>
+          `;
+          feedSection.appendChild(feedItem);
+        });
+      }
+    }
+
+    function showNewPostModal() {
+      document.getElementById('new-post-modal').style.display = 'block';
+    }
+
+    function closeNewPostModal() {
+      document.getElementById('new-post-modal').style.display = 'none';
+    }
+
+    function handlePost(e) {
+      if (e) e.preventDefault();
       const title = document.getElementById('post-title').value.trim();
       const text = document.getElementById('post-text').value.trim();
       const mediaFile = document.getElementById('post-media').files[0];
@@ -704,10 +1624,23 @@
             alert("Erro ao processar o arquivo.");
           });
       } else if (mediaUrl) {
-        createPost(title, text, mediaUrl, link);
+        // Verifica se é uma URL de imagem ou vídeo
+        if (isValidMediaUrl(mediaUrl)) {
+          createPost(title, text, mediaUrl, link);
+        } else {
+          alert("Por favor, insira uma URL válida de imagem (jpg, png, gif) ou vídeo (mp4, webm)");
+        }
       } else {
         createPost(title, text, "", link);
       }
+    }
+
+    function isValidMediaUrl(url) {
+      const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+      const videoExtensions = ['.mp4', '.webm'];
+      const lowerUrl = url.toLowerCase();
+      
+      return [...imageExtensions, ...videoExtensions].some(ext => lowerUrl.endsWith(ext));
     }
 
     function createPost(title, text, mediaContent, link) {
@@ -726,10 +1659,19 @@
       posts.push(post);
       localStorage.setItem('posts', JSON.stringify(posts));
       
-      alert("Postagem publicada com sucesso!");
-      clearPostForm();
-      closeNewPostModal();
-      displayPosts();
+      // Feedback visual
+      const postBtn = document.querySelector('#new-post-form button[type="submit"]');
+      const originalText = postBtn.innerHTML;
+      postBtn.innerHTML = '<i class="fas fa-check"></i> Publicado!';
+      postBtn.style.backgroundColor = '#4cc9f0';
+      
+      setTimeout(() => {
+        closeNewPostModal();
+        clearPostForm();
+        displayPosts();
+        postBtn.innerHTML = originalText;
+        postBtn.style.backgroundColor = '';
+      }, 1000);
     }
 
     function clearPostForm() {
@@ -740,60 +1682,19 @@
       document.getElementById('post-link').value = "";
     }
 
-    function displayPosts() {
-      const posts = JSON.parse(localStorage.getItem('posts'));
-      const feedSection = document.getElementById('feed-section');
-      feedSection.innerHTML = "";
-      
-      if (posts.length === 0) {
-        feedSection.innerHTML = "<p style='text-align:center;'>Nenhuma postagem encontrada.</p>";
-      } else {
-        // Ordena posts por data (mais recentes primeiro)
-        posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        
-        posts.forEach(post => {
-          const feedItem = document.createElement('div');
-          feedItem.classList.add('feed-item');
-          let mediaHTML = "";
-          
-          if (post.media) {
-            if (post.media.startsWith("data:video")) {
-              mediaHTML = `<video controls>
-                             <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
-                           </video>`;
-            } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
-              mediaHTML = `<img src="${post.media}" alt="Post Media">`;
-            }
-          }
-          
-          let deleteButton = "";
-          if (post.username === loggedInUser) {
-            deleteButton = `<button class="delete-btn" onclick="deletePost(${post.id})" title="Excluir">&times;</button>`;
-          }
-          
-          feedItem.innerHTML = `
-            ${deleteButton}
-            ${mediaHTML}
-            <div class="post-info">
-              <h3>${post.title}</h3>
-              <p>Por: ${post.username}</p>
-              <p class="post-date">${post.timestamp}</p>
-              <p>${post.text}</p>
-              ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
-            </div>
-          `;
-          feedSection.appendChild(feedItem);
-        });
-      }
-    }
-
     function deletePost(postId) {
-      if (confirm("Deseja excluir esta postagem?")) {
+      if (confirm("Tem certeza que deseja excluir esta postagem?")) {
         let posts = JSON.parse(localStorage.getItem('posts'));
         posts = posts.filter(post => post.id !== postId);
         localStorage.setItem('posts', JSON.stringify(posts));
-        alert("Post excluído com sucesso");
+        
+        // Atualiza os feeds
         displayPosts();
+        displayUserPosts();
+        loadPublicFeed();
+        loadExploreFeed();
+        
+        alert("Postagem excluída com sucesso!");
       }
     }
     
@@ -815,23 +1716,45 @@
       );
       
       if (filteredStories.length === 0) {
-        storiesContainer.innerHTML = "<p style='font-size:0.9rem;'>Nenhuma story encontrada.</p>";
+        storiesContainer.innerHTML = "<p style='font-size:0.9rem; padding: 1rem;'>Nenhuma story disponível.</p>";
       } else {
         // Ordena stories por data (mais recentes primeiro)
         filteredStories.sort((a, b) => b.timestamp - a.timestamp);
         
+        // Agrupa stories por usuário
+        const storiesByUser = {};
         filteredStories.forEach(story => {
+          if (!storiesByUser[story.username]) {
+            storiesByUser[story.username] = [];
+          }
+          storiesByUser[story.username].push(story);
+        });
+        
+        // Mostra apenas a story mais recente de cada usuário
+        Object.keys(storiesByUser).forEach(username => {
+          const latestStory = storiesByUser[username][0];
           const storyItem = document.createElement('div');
           storyItem.classList.add('story-item');
-          storyItem.innerHTML = `<img src="${story.media}" alt="Story de ${story.username}"><p>${story.username}</p>`;
-          storyItem.onclick = () => openStoryViewer(story.username, 0);
+          storyItem.innerHTML = `
+            <img src="${latestStory.media}" alt="Story de ${username}" class="story-avatar">
+            <span class="story-username">${username}</span>
+          `;
+          storyItem.onclick = () => openStoryViewer(username, 0);
           storiesContainer.appendChild(storyItem);
         });
       }
     }
 
-    function handleNewStory(event) {
-      event.preventDefault();
+    function showNewStoryModal() {
+      document.getElementById('new-story-modal').style.display = 'block';
+    }
+
+    function closeNewStoryModal() {
+      document.getElementById('new-story-modal').style.display = 'none';
+    }
+
+    function handleNewStory(e) {
+      if (e) e.preventDefault();
       const storyFile = document.getElementById('story-media').files[0];
       
       if (!storyFile) { 
@@ -851,10 +1774,19 @@
           stories.push(story);
           localStorage.setItem('stories', JSON.stringify(stories));
           
-          alert("Story publicada com sucesso!");
-          document.getElementById('story-media').value = "";
-          closeNewStoryModal();
-          displayStories();
+          // Feedback visual
+          const storyBtn = document.querySelector('#new-story-form button[type="submit"]');
+          const originalText = storyBtn.innerHTML;
+          storyBtn.innerHTML = '<i class="fas fa-check"></i> Publicada!';
+          storyBtn.style.backgroundColor = '#4cc9f0';
+          
+          setTimeout(() => {
+            closeNewStoryModal();
+            document.getElementById('story-media').value = "";
+            displayStories();
+            storyBtn.innerHTML = originalText;
+            storyBtn.style.backgroundColor = '';
+          }, 1000);
         })
         .catch(error => {
           console.error("Erro ao converter story:", error);
@@ -912,22 +1844,24 @@
       document.getElementById('story-modal').style.display = 'none';
     }
     
-    /* ---------- Perfil e Atualização ---------- */
-    function showProfilePage() {
-      hideAllSections();
-      document.getElementById('profile-page').style.display = 'block';
-      updateProfileDisplay();
-      displayUserPosts();
-    }
-
+    /* ---------- Perfil ---------- */
     function updateProfileDisplay() {
       const users = JSON.parse(localStorage.getItem('users'));
       const user = users.find(u => u.username === loggedInUser);
       
       if (user) {
-        document.getElementById('profile-username-display').textContent = user.username;
-        document.getElementById('profile-bio').textContent = user.bio || "Sem bio definida.";
-        document.getElementById('profile-picture').src = user.profile_picture || "https://via.placeholder.com/100";
+        document.getElementById('profile-username').textContent = user.username;
+        document.getElementById('profile-bio').textContent = user.bio || "Sem biografia definida.";
+        document.getElementById('profile-avatar').src = user.profile_picture || "https://via.placeholder.com/120";
+        
+        // Conta posts e stories
+        const posts = JSON.parse(localStorage.getItem('posts'));
+        const userPosts = posts.filter(post => post.username === loggedInUser);
+        document.getElementById('post-count').textContent = userPosts.length;
+        
+        const stories = JSON.parse(localStorage.getItem('stories'));
+        const userStories = stories.filter(story => story.username === loggedInUser);
+        document.getElementById('story-count').textContent = userStories.length;
       }
     }
 
@@ -938,7 +1872,7 @@
       userPostsContainer.innerHTML = "";
       
       if (userPosts.length === 0) {
-        userPostsContainer.innerHTML = "<p style='text-align:center;'>Você ainda não publicou nada.</p>";
+        userPostsContainer.innerHTML = "<p style='text-align:center; padding: 2rem;'>Você ainda não publicou nada.</p>";
       } else {
         // Ordena posts por data (mais recentes primeiro)
         userPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
@@ -949,38 +1883,36 @@
           let mediaHTML = "";
           
           if (post.media) {
-            if (post.media.startsWith("data:video")) {
-              mediaHTML = `<video controls>
-                             <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
-                           </video>`;
-            } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
-              mediaHTML = `<img src="${post.media}" alt="Post Media">`;
+            if (post.media.startsWith("data:video") || post.media.endsWith(".mp4") || post.media.endsWith(".webm")) {
+              mediaHTML = `
+                <video controls class="feed-media">
+                  <source src="${post.media}" type="${post.media.startsWith('data:') ? 
+                    post.media.substring(5, post.media.indexOf(';')) : 'video/mp4'}">
+                </video>
+              `;
+            } else {
+              mediaHTML = `<img src="${post.media}" alt="Post Media" class="feed-media">`;
             }
           }
           
-          let deleteButton = `<button class="delete-btn" onclick="deleteUserPost(${post.id})" title="Excluir">&times;</button>`;
           postItem.innerHTML = `
-            ${deleteButton}
             ${mediaHTML}
-            <div class="post-info">
-              <h3>${post.title}</h3>
-              <p class="post-date">${post.timestamp}</p>
-              <p>${post.text}</p>
-              ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
+            <div class="feed-content">
+              <div class="feed-meta">
+                <span class="feed-date">${post.timestamp}</span>
+              </div>
+              <h3 class="feed-title">${post.title}</h3>
+              <p class="feed-text">${post.text}</p>
+              ${post.link ? `<a href="${post.link}" target="_blank" class="btn btn-outline btn-sm"><i class="fas fa-external-link-alt"></i> Ver link</a>` : ""}
+              <div class="feed-actions">
+                <button class="btn btn-danger btn-sm" onclick="deletePost(${post.id})">
+                  <i class="fas fa-trash"></i> Excluir
+                </button>
+              </div>
             </div>
           `;
           userPostsContainer.appendChild(postItem);
         });
-      }
-    }
-
-    function deleteUserPost(postId) {
-      if (confirm("Deseja excluir esta postagem?")) {
-        let posts = JSON.parse(localStorage.getItem('posts'));
-        posts = posts.filter(post => post.id !== postId);
-        localStorage.setItem('posts', JSON.stringify(posts));
-        alert("Post excluído com sucesso");
-        displayUserPosts();
       }
     }
 
@@ -998,8 +1930,8 @@
       document.getElementById('edit-profile-modal').style.display = 'none';
     }
 
-    function handleProfileUpdate(event) {
-      event.preventDefault();
+    function handleProfileUpdate(e) {
+      if (e) e.preventDefault();
       const newBio = document.getElementById('edit-bio').value.trim();
       const profilePicFile = document.getElementById('edit-profile-picture').files[0];
       
@@ -1028,152 +1960,19 @@
         }
         
         localStorage.setItem('users', JSON.stringify(users));
-        alert("Perfil atualizado com sucesso!");
-        updateProfileDisplay();
-        closeEditProfileModal();
-      }
-    }
-    
-    /* ---------- Chat (placeholder) ---------- */
-    function showChatSection() {
-      hideAllSections();
-      document.getElementById('chat-section').style.display = 'block';
-      document.getElementById('chat-messages').innerHTML = "";
-      document.getElementById('chat-input').value = "";
-    }
-
-    function sendMessage() {
-      alert("Função de chat não implementada neste exemplo.");
-    }
-
-    function showNewChatModal() {
-      document.getElementById('new-chat-modal').style.display = 'block';
-    }
-
-    function closeNewChatModal() {
-      document.getElementById('new-chat-modal').style.display = 'none';
-    }
-
-    function createNewChat() {
-      alert("Função de criação de chat não implementada neste exemplo.");
-      closeNewChatModal();
-    }
-    
-    /* ---------- Pesquisa de Perfis ---------- */
-    const searchInput = document.getElementById('search-input');
-    searchInput.addEventListener('input', handleProfileSearch);
-
-    function handleProfileSearch() {
-      const query = searchInput.value.trim().toLowerCase();
-      const resultsDiv = document.getElementById('search-results');
-      resultsDiv.innerHTML = "";
-      
-      if (query === "") { 
-        resultsDiv.style.display = 'none'; 
-        return; 
-      }
-
-      const users = JSON.parse(localStorage.getItem('users'));
-      const filteredUsers = users.filter(user => 
-        user.username.toLowerCase().includes(query) && user.username !== loggedInUser
-      );
-      
-      if (filteredUsers.length === 0) {
-        resultsDiv.innerHTML = "<p style='padding:10px;'>Nenhum perfil encontrado.</p>";
-      } else {
-        filteredUsers.forEach(user => {
-          const resultItem = document.createElement('div');
-          resultItem.classList.add('search-result');
-          resultItem.innerHTML = `<img src="${user.profile_picture || 'https://via.placeholder.com/40'}" alt="${user.username}"><span>${user.username}</span>`;
-          resultItem.onclick = () => { 
-            showOtherProfilePage(user.username); 
-            resultsDiv.style.display = 'none'; 
-            searchInput.value = ""; 
-          };
-          resultsDiv.appendChild(resultItem);
-        });
-      }
-      
-      resultsDiv.style.display = 'block';
-    }
-
-    function showOtherProfilePage(username) {
-      hideAllSections();
-      document.getElementById('other-profile-page').style.display = 'block';
-      
-      const users = JSON.parse(localStorage.getItem('users'));
-      const user = users.find(u => u.username === username);
-      
-      if (user) {
-        const otherProfileCard = document.getElementById('other-profile-card');
-        otherProfileCard.innerHTML = `
-          <div class="profile-card">
-            <img src="${user.profile_picture || 'https://via.placeholder.com/100'}" alt="Foto de Perfil">
-            <h2>${user.username}</h2>
-            <p>${user.bio || "Sem bio definida."}</p>
-          </div>
-        `;
         
-        if (loggedInUser !== username) {
-          const followText = "Seguir";
-          otherProfileCard.innerHTML += `<button onclick="alert('Função de seguir não implementada neste exemplo.')">${followText}</button>`;
-        }
-      }
-
-      // Mostra stories do usuário
-      const stories = JSON.parse(localStorage.getItem('stories'));
-      const userStories = stories.filter(story => story.username === username);
-      const otherStoryContainer = document.getElementById('other-story-container');
-      otherStoryContainer.innerHTML = "";
-      
-      if (userStories.length > 0) {
-        userStories.forEach(story => {
-          const storyItem = document.createElement('div');
-          storyItem.classList.add('story-item');
-          storyItem.innerHTML = `<img src="${story.media}" alt="Story de ${story.username}"><p>${story.username}</p>`;
-          storyItem.onclick = () => openStoryViewer(username, 0);
-          otherStoryContainer.appendChild(storyItem);
-        });
-      }
-
-      // Mostra posts do usuário
-      const posts = JSON.parse(localStorage.getItem('posts'));
-      const userPosts = posts.filter(post => post.username === username);
-      const otherUserPostsContainer = document.getElementById('other-user-posts');
-      otherUserPostsContainer.innerHTML = "";
-      
-      if (userPosts.length === 0) {
-        otherUserPostsContainer.innerHTML = "<p style='text-align:center;'>Nenhuma postagem encontrada.</p>";
-      } else {
-        // Ordena posts por data (mais recentes primeiro)
-        userPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        // Feedback visual
+        const saveBtn = document.querySelector('#edit-profile-form button[type="submit"]');
+        const originalText = saveBtn.innerHTML;
+        saveBtn.innerHTML = '<i class="fas fa-check"></i> Salvo!';
+        saveBtn.style.backgroundColor = '#4cc9f0';
         
-        userPosts.forEach(post => {
-          const postItem = document.createElement('div');
-          postItem.classList.add('feed-item');
-          let mediaHTML = "";
-          
-          if (post.media) {
-            if (post.media.startsWith("data:video")) {
-              mediaHTML = `<video controls>
-                             <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
-                           </video>`;
-            } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
-              mediaHTML = `<img src="${post.media}" alt="Post Media">`;
-            }
-          }
-          
-          postItem.innerHTML = `
-            ${mediaHTML}
-            <div class="post-info">
-              <h3>${post.title}</h3>
-              <p class="post-date">${post.timestamp}</p>
-              <p>${post.text}</p>
-              ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
-            </div>
-          `;
-          otherUserPostsContainer.appendChild(postItem);
-        });
+        setTimeout(() => {
+          closeEditProfileModal();
+          updateProfileDisplay();
+          saveBtn.innerHTML = originalText;
+          saveBtn.style.backgroundColor = '';
+        }, 1000);
       }
     }
     
@@ -1187,37 +1986,29 @@
       });
     }
 
-    function showNewPostModal() {
-      document.getElementById('new-post-modal').style.display = 'block';
-    }
-
-    function closeNewPostModal() {
-      document.getElementById('new-post-modal').style.display = 'none';
-    }
-
-    function showNewStoryModal() {
-      document.getElementById('new-story-modal').style.display = 'block';
-    }
-
-    function closeNewStoryModal() {
-      document.getElementById('new-story-modal').style.display = 'none';
-    }
-
-    function showFeed() {
-      hideAllSections();
-      document.getElementById('post-section').style.display = 'block';
-      displayPosts();
-      displayStories();
-    }
-
     // Fechar modais ao clicar fora
     window.onclick = function(event) {
-      const modalIds = ["new-post-modal", "new-story-modal", "edit-profile-modal", "new-chat-modal", "story-modal"];
+      const modalIds = ["new-post-modal", "new-story-modal", "edit-profile-modal", "story-modal"];
       modalIds.forEach(id => {
         const modal = document.getElementById(id);
-        if (event.target === modal) { modal.style.display = 'none'; }
+        if (event.target === modal) { 
+          modal.style.display = 'none'; 
+        }
       });
     }
+
+    // Fechar modais com ESC
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        const modalIds = ["new-post-modal", "new-story-modal", "edit-profile-modal", "story-modal"];
+        modalIds.forEach(id => {
+          const modal = document.getElementById(id);
+          if (modal.style.display === 'block') {
+            modal.style.display = 'none';
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html>
