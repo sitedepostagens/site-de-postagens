@@ -554,11 +554,28 @@
       <p><a href="mailto:brawlstars14062008@gmail.com">E-Mail</a> | <a href="tel:+5581999994498">Telefone</a></p>
     </footer>
   </div>
-<link href="handlelogin.js">
+
   <script>
-    // Base URL do servidor (confirme que está rodando em http://localhost:3000)
-    const baseURL = 'http://localhost:3000';
+    // Inicializa os dados no localStorage se não existirem
+    function initializeLocalStorage() {
+      if (!localStorage.getItem('users')) {
+        localStorage.setItem('users', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('posts')) {
+        localStorage.setItem('posts', JSON.stringify([]));
+      }
+      if (!localStorage.getItem('stories')) {
+        localStorage.setItem('stories', JSON.stringify([]));
+      }
+    }
+
+    // Chamada para inicializar os dados
+    initializeLocalStorage();
+
     let loggedInUser = localStorage.getItem('loggedInUser');
+    let currentStoryArray = [];
+    let currentStoryIndex = 0;
+    let storyTimer;
 
     // Se o usuário já estiver logado, exibe a área inicial
     if (loggedInUser) {
@@ -573,75 +590,72 @@
       document.getElementById('login-form').style.display = 'block';
       document.getElementById('register-form').style.display = 'none';
     }
+
     function showRegisterForm() {
       document.getElementById('auth-section').style.display = 'block';
       document.getElementById('login-form').style.display = 'none';
       document.getElementById('register-form').style.display = 'block';
     }
+
     function handleRegister(event) {
       event.preventDefault();
       const username = document.getElementById('register-username').value.trim();
       const password = document.getElementById('register-password').value.trim();
+      
       if (!username || !password) { 
         alert("Preencha todos os campos!"); 
         return; 
       }
-      fetch(`${baseURL}/api/users`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(err => { throw new Error(err.error || "Erro ao cadastrar usuário"); });
-        }
-        return response.json();
-      })
-      .then(data => {
-        alert(`Cadastro bem-sucedido, ${data.username}!`);
-        showLoginForm();
-      })
-      .catch(err => { 
-        console.error(err);
-        alert("Erro ao cadastrar usuário: " + err.message);
-      });
+
+      const users = JSON.parse(localStorage.getItem('users'));
+      
+      // Verifica se o usuário já existe
+      if (users.some(user => user.username === username)) {
+        alert("Nome de usuário já está em uso!");
+        return;
+      }
+
+      // Adiciona o novo usuário
+      const newUser = {
+        username,
+        password,
+        bio: "",
+        profile_picture: "",
+        following: []
+      };
+      
+      users.push(newUser);
+      localStorage.setItem('users', JSON.stringify(users));
+      
+      alert(`Cadastro bem-sucedido, ${username}!`);
+      showLoginForm();
     }
+
     function handleLogin(event) {
       event.preventDefault();
       const username = document.getElementById('login-username').value.trim();
       const password = document.getElementById('login-password').value.trim();
+      
       if (!username || !password) { 
         alert("Preencha todos os campos!"); 
         return; 
       }
-      fetch(`${baseURL}/api/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(err => { throw new Error(err.message || "Erro ao realizar login"); });
-        }
-        return response.json();
-      })
-      .then(data => {
-        if (data.success) {
-          localStorage.setItem('loggedInUser', username);
-          loggedInUser = username;
-          alert(`Login bem-sucedido, ${username}!`);
-          hideAllSections();
-          document.getElementById('profile-section').style.display = 'block';
-          document.getElementById('profile-username').textContent = loggedInUser;
-        } else {
-          document.getElementById('login-error').style.display = 'block';
-        }
-      })
-      .catch(err => { 
-        console.error(err);
-        alert("Erro ao realizar login: " + err.message);
-      });
+
+      const users = JSON.parse(localStorage.getItem('users'));
+      const user = users.find(u => u.username === username && u.password === password);
+      
+      if (user) {
+        localStorage.setItem('loggedInUser', username);
+        loggedInUser = username;
+        alert(`Login bem-sucedido, ${username}!`);
+        hideAllSections();
+        document.getElementById('profile-section').style.display = 'block';
+        document.getElementById('profile-username').textContent = loggedInUser;
+      } else {
+        document.getElementById('login-error').style.display = 'block';
+      }
     }
+
     function hideAllSections() {
       document.getElementById('home-screen').style.display = 'none';
       document.getElementById('auth-section').style.display = 'none';
@@ -651,12 +665,14 @@
       document.getElementById('other-profile-page').style.display = 'none';
       document.getElementById('chat-section').style.display = 'none';
     }
+
     function logout() {
       localStorage.removeItem('loggedInUser');
       loggedInUser = null;
       hideAllSections();
       document.getElementById('home-screen').style.display = 'block';
     }
+
     function showPostSection() {
       hideAllSections();
       document.getElementById('post-section').style.display = 'block';
@@ -672,10 +688,12 @@
       const mediaFile = document.getElementById('post-media').files[0];
       const mediaUrl = document.getElementById('post-url').value.trim();
       const link = document.getElementById('post-link').value.trim();
+      
       if (!title && !text && !mediaFile && !mediaUrl && !link) {
         alert("Preencha ao menos um campo para a postagem!");
         return;
       }
+
       if (mediaFile) {
         convertFileToDataURL(mediaFile)
           .then(result => {
@@ -691,27 +709,29 @@
         createPost(title, text, "", link);
       }
     }
+
     function createPost(title, text, mediaContent, link) {
       const timestamp = new Date().toLocaleString();
-      fetch(`${baseURL}/api/posts`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: loggedInUser, title, text, media: mediaContent, link, timestamp })
-      })
-      .then(response => {
-        if (!response.ok) {
-          return response.json().then(err => { throw new Error(err.error || "Erro ao criar post"); });
-        }
-        return response.json();
-      })
-      .then(data => {
-        alert("Postagem publicada com sucesso!");
-        clearPostForm();
-        closeNewPostModal();
-        displayPosts();
-      })
-      .catch(err => { console.error(err); alert("Erro ao criar post: " + err.message); });
+      const post = {
+        id: Date.now(), // Usa timestamp como ID único
+        username: loggedInUser,
+        title,
+        text,
+        media: mediaContent,
+        link,
+        timestamp
+      };
+
+      const posts = JSON.parse(localStorage.getItem('posts'));
+      posts.push(post);
+      localStorage.setItem('posts', JSON.stringify(posts));
+      
+      alert("Postagem publicada com sucesso!");
+      clearPostForm();
+      closeNewPostModal();
+      displayPosts();
     }
+
     function clearPostForm() {
       document.getElementById('post-title').value = "";
       document.getElementById('post-text').value = "";
@@ -719,153 +739,154 @@
       document.getElementById('post-url').value = "";
       document.getElementById('post-link').value = "";
     }
+
     function displayPosts() {
-      fetch(`${baseURL}/api/posts`)
-        .then(response => response.json())
-        .then(data => {
-          const feedSection = document.getElementById('feed-section');
-          feedSection.innerHTML = "";
-          if (data.length === 0) {
-            feedSection.innerHTML = "<p style='text-align:center;'>Nenhuma postagem encontrada.</p>";
-          } else {
-            data.forEach(post => {
-              const feedItem = document.createElement('div');
-              feedItem.classList.add('feed-item');
-              let mediaHTML = "";
-              if (post.media) {
-                if (post.media.startsWith("data:video")) {
-                  mediaHTML = `<video controls>
-                                 <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
-                               </video>`;
-                } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
-                  mediaHTML = `<img src="${post.media}" alt="Post Media">`;
-                }
-              }
-              let deleteButton = "";
-              if (post.username === loggedInUser) {
-                deleteButton = `<button class="delete-btn" onclick="deletePost(${post.id})" title="Excluir">&times;</button>`;
-              }
-              feedItem.innerHTML = `
-                ${deleteButton}
-                ${mediaHTML}
-                <div class="post-info">
-                  <h3>${post.title}</h3>
-                  <p>Por: ${post.username}</p>
-                  <p class="post-date">${post.timestamp}</p>
-                  <p>${post.text}</p>
-                  ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
-                </div>
-              `;
-              feedSection.appendChild(feedItem);
-            });
+      const posts = JSON.parse(localStorage.getItem('posts'));
+      const feedSection = document.getElementById('feed-section');
+      feedSection.innerHTML = "";
+      
+      if (posts.length === 0) {
+        feedSection.innerHTML = "<p style='text-align:center;'>Nenhuma postagem encontrada.</p>";
+      } else {
+        // Ordena posts por data (mais recentes primeiro)
+        posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        posts.forEach(post => {
+          const feedItem = document.createElement('div');
+          feedItem.classList.add('feed-item');
+          let mediaHTML = "";
+          
+          if (post.media) {
+            if (post.media.startsWith("data:video")) {
+              mediaHTML = `<video controls>
+                             <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
+                           </video>`;
+            } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
+              mediaHTML = `<img src="${post.media}" alt="Post Media">`;
+            }
           }
-        })
-        .catch(err => { console.error(err); });
+          
+          let deleteButton = "";
+          if (post.username === loggedInUser) {
+            deleteButton = `<button class="delete-btn" onclick="deletePost(${post.id})" title="Excluir">&times;</button>`;
+          }
+          
+          feedItem.innerHTML = `
+            ${deleteButton}
+            ${mediaHTML}
+            <div class="post-info">
+              <h3>${post.title}</h3>
+              <p>Por: ${post.username}</p>
+              <p class="post-date">${post.timestamp}</p>
+              <p>${post.text}</p>
+              ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
+            </div>
+          `;
+          feedSection.appendChild(feedItem);
+        });
+      }
     }
+
     function deletePost(postId) {
       if (confirm("Deseja excluir esta postagem?")) {
-        fetch(`${baseURL}/api/posts/${postId}`, {
-          method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message || "Post excluído com sucesso");
-          displayPosts();
-        })
-        .catch(err => { console.error(err); alert("Erro ao excluir post."); });
+        let posts = JSON.parse(localStorage.getItem('posts'));
+        posts = posts.filter(post => post.id !== postId);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        alert("Post excluído com sucesso");
+        displayPosts();
       }
     }
     
     /* ---------- Stories ---------- */
     function displayStories() {
-      fetch(`${baseURL}/api/stories`)
-        .then(response => response.json())
-        .then(data => {
-          const storiesContainer = document.getElementById('stories-container');
-          storiesContainer.innerHTML = "";
-          // Busca o perfil do usuário logado para filtrar as stories
-          fetch(`${baseURL}/api/users/${loggedInUser}`)
-            .then(res => res.json())
-            .then(user => {
-              const following = user.following;
-              const filteredStories = data.filter(story =>
-                story.username === loggedInUser || following.includes(story.username)
-              );
-              if (filteredStories.length === 0) {
-                storiesContainer.innerHTML = "<p style='font-size:0.9rem;'>Nenhuma story encontrada.</p>";
-              } else {
-                filteredStories.forEach(story => {
-                  const storyItem = document.createElement('div');
-                  storyItem.classList.add('story-item');
-                  storyItem.innerHTML = `<img src="${story.media}" alt="Story de ${story.username}"><p>${story.username}</p>`;
-                  storyItem.onclick = () => openStoryViewer(story.username, 0);
-                  storiesContainer.appendChild(storyItem);
-                });
-              }
-            })
-            .catch(err => console.error(err));
-        })
-        .catch(err => console.error(err));
+      const stories = JSON.parse(localStorage.getItem('stories'));
+      const storiesContainer = document.getElementById('stories-container');
+      storiesContainer.innerHTML = "";
+      
+      // Busca o perfil do usuário logado para filtrar as stories
+      const users = JSON.parse(localStorage.getItem('users'));
+      const currentUser = users.find(user => user.username === loggedInUser);
+      
+      if (!currentUser) return;
+      
+      const following = currentUser.following || [];
+      const filteredStories = stories.filter(story =>
+        story.username === loggedInUser || following.includes(story.username)
+      );
+      
+      if (filteredStories.length === 0) {
+        storiesContainer.innerHTML = "<p style='font-size:0.9rem;'>Nenhuma story encontrada.</p>";
+      } else {
+        // Ordena stories por data (mais recentes primeiro)
+        filteredStories.sort((a, b) => b.timestamp - a.timestamp);
+        
+        filteredStories.forEach(story => {
+          const storyItem = document.createElement('div');
+          storyItem.classList.add('story-item');
+          storyItem.innerHTML = `<img src="${story.media}" alt="Story de ${story.username}"><p>${story.username}</p>`;
+          storyItem.onclick = () => openStoryViewer(story.username, 0);
+          storiesContainer.appendChild(storyItem);
+        });
+      }
     }
+
     function handleNewStory(event) {
       event.preventDefault();
       const storyFile = document.getElementById('story-media').files[0];
+      
       if (!storyFile) { 
         alert("Selecione uma imagem para sua story!"); 
         return; 
       }
+
       convertFileToDataURL(storyFile)
         .then(storyMedia => {
-          const story = { username: loggedInUser, media: storyMedia, timestamp: Date.now() };
-          fetch(`${baseURL}/api/stories`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(story)
-          })
-          .then(response => response.json())
-          .then(data => {
-            if(data.error) {
-              alert("Erro ao criar story: " + data.error);
-            } else {
-              alert("Story publicada com sucesso!");
-              document.getElementById('story-media').value = "";
-              closeNewStoryModal();
-              displayStories();
-            }
-          })
-          .catch(err => { console.error(err); alert("Erro ao criar story."); });
+          const story = {
+            username: loggedInUser,
+            media: storyMedia,
+            timestamp: Date.now()
+          };
+
+          const stories = JSON.parse(localStorage.getItem('stories'));
+          stories.push(story);
+          localStorage.setItem('stories', JSON.stringify(stories));
+          
+          alert("Story publicada com sucesso!");
+          document.getElementById('story-media').value = "";
+          closeNewStoryModal();
+          displayStories();
         })
         .catch(error => {
           console.error("Erro ao converter story:", error);
           alert("Erro ao processar a imagem.");
         });
     }
+
     // Story Viewer
-    let currentStoryArray = [];
-    let currentStoryIndex = 0;
-    let storyTimer;
     function openStoryViewer(username, startIndex = 0) {
-      fetch(`${baseURL}/api/stories`)
-        .then(response => response.json())
-        .then(data => {
-          currentStoryArray = data.filter(s => s.username === username);
-          if (currentStoryArray.length === 0) return;
-          currentStoryIndex = startIndex;
-          displayCurrentStory();
-          document.getElementById('story-modal').style.display = 'block';
-        })
-        .catch(err => console.error(err));
+      const stories = JSON.parse(localStorage.getItem('stories'));
+      currentStoryArray = stories.filter(s => s.username === username);
+      
+      if (currentStoryArray.length === 0) return;
+      
+      currentStoryIndex = startIndex;
+      displayCurrentStory();
+      document.getElementById('story-modal').style.display = 'block';
     }
+
     function displayCurrentStory() {
       clearTimeout(storyTimer);
+      
       if (currentStoryIndex < 0 || currentStoryIndex >= currentStoryArray.length) {
         closeStoryModal();
         return;
       }
+      
       const story = currentStoryArray[currentStoryIndex];
       document.getElementById('story-modal-img').src = story.media;
       storyTimer = setTimeout(() => { nextStory(); }, 8000);
     }
+
     function nextStory() {
       clearTimeout(storyTimer);
       if (currentStoryIndex < currentStoryArray.length - 1) {
@@ -875,6 +896,7 @@
         closeStoryModal();
       }
     }
+
     function prevStory() {
       clearTimeout(storyTimer);
       if (currentStoryIndex > 0) {
@@ -884,6 +906,7 @@
         closeStoryModal();
       }
     }
+
     function closeStoryModal() {
       clearTimeout(storyTimer);
       document.getElementById('story-modal').style.display = 'none';
@@ -896,84 +919,90 @@
       updateProfileDisplay();
       displayUserPosts();
     }
+
     function updateProfileDisplay() {
-      fetch(`${baseURL}/api/users/${loggedInUser}`)
-        .then(response => response.json())
-        .then(user => {
-          document.getElementById('profile-username-display').textContent = user.username;
-          document.getElementById('profile-bio').textContent = user.bio || "Sem bio definida.";
-          document.getElementById('profile-picture').src = user.profile_picture || "https://via.placeholder.com/100";
-        })
-        .catch(err => console.error(err));
-    }
-    function displayUserPosts() {
-      fetch(`${baseURL}/api/posts?username=${loggedInUser}`)
-        .then(response => response.json())
-        .then(data => {
-          const userPostsContainer = document.getElementById('user-posts');
-          userPostsContainer.innerHTML = "";
-          if (data.length === 0) {
-            userPostsContainer.innerHTML = "<p style='text-align:center;'>Você ainda não publicou nada.</p>";
-          } else {
-            data.forEach(post => {
-              const postItem = document.createElement('div');
-              postItem.classList.add('feed-item');
-              let mediaHTML = "";
-              if (post.media) {
-                if (post.media.startsWith("data:video")) {
-                  mediaHTML = `<video controls>
-                                 <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
-                               </video>`;
-                } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
-                  mediaHTML = `<img src="${post.media}" alt="Post Media">`;
-                }
-              }
-              let deleteButton = `<button class="delete-btn" onclick="deleteUserPost(${post.id})" title="Excluir">&times;</button>`;
-              postItem.innerHTML = `
-                ${deleteButton}
-                ${mediaHTML}
-                <div class="post-info">
-                  <h3>${post.title}</h3>
-                  <p class="post-date">${post.timestamp}</p>
-                  <p>${post.text}</p>
-                  ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
-                </div>
-              `;
-              userPostsContainer.appendChild(postItem);
-            });
-          }
-        })
-        .catch(err => console.error(err));
-    }
-    function deleteUserPost(postId) {
-      if (confirm("Deseja excluir esta postagem?")) {
-        fetch(`${baseURL}/api/posts/${postId}`, {
-          method: 'DELETE'
-        })
-        .then(response => response.json())
-        .then(data => {
-          alert(data.message || "Post excluído com sucesso");
-          displayUserPosts();
-        })
-        .catch(err => { console.error(err); alert("Erro ao excluir post."); });
+      const users = JSON.parse(localStorage.getItem('users'));
+      const user = users.find(u => u.username === loggedInUser);
+      
+      if (user) {
+        document.getElementById('profile-username-display').textContent = user.username;
+        document.getElementById('profile-bio').textContent = user.bio || "Sem bio definida.";
+        document.getElementById('profile-picture').src = user.profile_picture || "https://via.placeholder.com/100";
       }
     }
-    function showEditProfileModal() {
-      fetch(`${baseURL}/api/users/${loggedInUser}`)
-        .then(response => response.json())
-        .then(user => {
-          document.getElementById('edit-bio').value = user.bio;
-          document.getElementById('edit-profile-modal').style.display = 'block';
-        })
-        .catch(err => console.error(err));
+
+    function displayUserPosts() {
+      const posts = JSON.parse(localStorage.getItem('posts'));
+      const userPosts = posts.filter(post => post.username === loggedInUser);
+      const userPostsContainer = document.getElementById('user-posts');
+      userPostsContainer.innerHTML = "";
+      
+      if (userPosts.length === 0) {
+        userPostsContainer.innerHTML = "<p style='text-align:center;'>Você ainda não publicou nada.</p>";
+      } else {
+        // Ordena posts por data (mais recentes primeiro)
+        userPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        userPosts.forEach(post => {
+          const postItem = document.createElement('div');
+          postItem.classList.add('feed-item');
+          let mediaHTML = "";
+          
+          if (post.media) {
+            if (post.media.startsWith("data:video")) {
+              mediaHTML = `<video controls>
+                             <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
+                           </video>`;
+            } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
+              mediaHTML = `<img src="${post.media}" alt="Post Media">`;
+            }
+          }
+          
+          let deleteButton = `<button class="delete-btn" onclick="deleteUserPost(${post.id})" title="Excluir">&times;</button>`;
+          postItem.innerHTML = `
+            ${deleteButton}
+            ${mediaHTML}
+            <div class="post-info">
+              <h3>${post.title}</h3>
+              <p class="post-date">${post.timestamp}</p>
+              <p>${post.text}</p>
+              ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
+            </div>
+          `;
+          userPostsContainer.appendChild(postItem);
+        });
+      }
     }
+
+    function deleteUserPost(postId) {
+      if (confirm("Deseja excluir esta postagem?")) {
+        let posts = JSON.parse(localStorage.getItem('posts'));
+        posts = posts.filter(post => post.id !== postId);
+        localStorage.setItem('posts', JSON.stringify(posts));
+        alert("Post excluído com sucesso");
+        displayUserPosts();
+      }
+    }
+
+    function showEditProfileModal() {
+      const users = JSON.parse(localStorage.getItem('users'));
+      const user = users.find(u => u.username === loggedInUser);
+      
+      if (user) {
+        document.getElementById('edit-bio').value = user.bio || "";
+        document.getElementById('edit-profile-modal').style.display = 'block';
+      }
+    }
+
     function closeEditProfileModal() {
       document.getElementById('edit-profile-modal').style.display = 'none';
     }
+
     function handleProfileUpdate(event) {
       event.preventDefault();
       const newBio = document.getElementById('edit-bio').value.trim();
       const profilePicFile = document.getElementById('edit-profile-picture').files[0];
+      
       if (profilePicFile) {
         convertFileToDataURL(profilePicFile)
           .then(newProfilePic => {
@@ -987,23 +1016,22 @@
         updateProfile(newBio, "");
       }
     }
+
     function updateProfile(newBio, newProfilePic) {
-      fetch(`${baseURL}/api/users/${loggedInUser}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bio: newBio, profilePicture: newProfilePic, following: [] })
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          alert("Erro ao atualizar perfil: " + data.error);
-        } else {
-          alert("Perfil atualizado com sucesso!");
-          updateProfileDisplay();
-          closeEditProfileModal();
+      let users = JSON.parse(localStorage.getItem('users'));
+      const userIndex = users.findIndex(u => u.username === loggedInUser);
+      
+      if (userIndex !== -1) {
+        users[userIndex].bio = newBio;
+        if (newProfilePic) {
+          users[userIndex].profile_picture = newProfilePic;
         }
-      })
-      .catch(err => { console.error(err); alert("Erro ao atualizar perfil."); });
+        
+        localStorage.setItem('users', JSON.stringify(users));
+        alert("Perfil atualizado com sucesso!");
+        updateProfileDisplay();
+        closeEditProfileModal();
+      }
     }
     
     /* ---------- Chat (placeholder) ---------- */
@@ -1013,105 +1041,140 @@
       document.getElementById('chat-messages').innerHTML = "";
       document.getElementById('chat-input').value = "";
     }
+
     function sendMessage() {
-      alert("Função de chat não integrada no exemplo.");
+      alert("Função de chat não implementada neste exemplo.");
     }
+
     function showNewChatModal() {
       document.getElementById('new-chat-modal').style.display = 'block';
     }
+
     function closeNewChatModal() {
       document.getElementById('new-chat-modal').style.display = 'none';
     }
+
     function createNewChat() {
-      alert("Função de criação de chat não integrada no exemplo.");
+      alert("Função de criação de chat não implementada neste exemplo.");
       closeNewChatModal();
     }
     
     /* ---------- Pesquisa de Perfis ---------- */
     const searchInput = document.getElementById('search-input');
     searchInput.addEventListener('input', handleProfileSearch);
+
     function handleProfileSearch() {
       const query = searchInput.value.trim().toLowerCase();
       const resultsDiv = document.getElementById('search-results');
       resultsDiv.innerHTML = "";
-      if (query === "") { resultsDiv.style.display = 'none'; return; }
-      fetch(`${baseURL}/api/users/search?query=${query}`)
-        .then(response => response.json())
-        .then(data => {
-          if (data.length === 0) {
-            resultsDiv.innerHTML = "<p style='padding:10px;'>Nenhum perfil encontrado.</p>";
-          } else {
-            data.forEach(user => {
-              const resultItem = document.createElement('div');
-              resultItem.classList.add('search-result');
-              resultItem.innerHTML = `<img src="${user.profile_picture || 'https://via.placeholder.com/40'}" alt="${user.username}"><span>${user.username}</span>`;
-              resultItem.onclick = () => { 
-                showOtherProfilePage(user.username); 
-                resultsDiv.style.display = 'none'; 
-                searchInput.value = ""; 
-              };
-              resultsDiv.appendChild(resultItem);
-            });
-          }
-          resultsDiv.style.display = 'block';
-        })
-        .catch(err => console.error(err));
+      
+      if (query === "") { 
+        resultsDiv.style.display = 'none'; 
+        return; 
+      }
+
+      const users = JSON.parse(localStorage.getItem('users'));
+      const filteredUsers = users.filter(user => 
+        user.username.toLowerCase().includes(query) && user.username !== loggedInUser
+      );
+      
+      if (filteredUsers.length === 0) {
+        resultsDiv.innerHTML = "<p style='padding:10px;'>Nenhum perfil encontrado.</p>";
+      } else {
+        filteredUsers.forEach(user => {
+          const resultItem = document.createElement('div');
+          resultItem.classList.add('search-result');
+          resultItem.innerHTML = `<img src="${user.profile_picture || 'https://via.placeholder.com/40'}" alt="${user.username}"><span>${user.username}</span>`;
+          resultItem.onclick = () => { 
+            showOtherProfilePage(user.username); 
+            resultsDiv.style.display = 'none'; 
+            searchInput.value = ""; 
+          };
+          resultsDiv.appendChild(resultItem);
+        });
+      }
+      
+      resultsDiv.style.display = 'block';
     }
+
     function showOtherProfilePage(username) {
       hideAllSections();
       document.getElementById('other-profile-page').style.display = 'block';
-      fetch(`${baseURL}/api/users/${username}`)
-        .then(response => response.json())
-        .then(user => {
-          const otherProfileCard = document.getElementById('other-profile-card');
-          otherProfileCard.innerHTML = `
-            <div class="profile-card">
-              <img src="${user.profile_picture || 'https://via.placeholder.com/100'}" alt="Foto de Perfil">
-              <h2>${user.username}</h2>
-              <p>${user.bio || "Sem bio definida."}</p>
+      
+      const users = JSON.parse(localStorage.getItem('users'));
+      const user = users.find(u => u.username === username);
+      
+      if (user) {
+        const otherProfileCard = document.getElementById('other-profile-card');
+        otherProfileCard.innerHTML = `
+          <div class="profile-card">
+            <img src="${user.profile_picture || 'https://via.placeholder.com/100'}" alt="Foto de Perfil">
+            <h2>${user.username}</h2>
+            <p>${user.bio || "Sem bio definida."}</p>
+          </div>
+        `;
+        
+        if (loggedInUser !== username) {
+          const followText = "Seguir";
+          otherProfileCard.innerHTML += `<button onclick="alert('Função de seguir não implementada neste exemplo.')">${followText}</button>`;
+        }
+      }
+
+      // Mostra stories do usuário
+      const stories = JSON.parse(localStorage.getItem('stories'));
+      const userStories = stories.filter(story => story.username === username);
+      const otherStoryContainer = document.getElementById('other-story-container');
+      otherStoryContainer.innerHTML = "";
+      
+      if (userStories.length > 0) {
+        userStories.forEach(story => {
+          const storyItem = document.createElement('div');
+          storyItem.classList.add('story-item');
+          storyItem.innerHTML = `<img src="${story.media}" alt="Story de ${story.username}"><p>${story.username}</p>`;
+          storyItem.onclick = () => openStoryViewer(username, 0);
+          otherStoryContainer.appendChild(storyItem);
+        });
+      }
+
+      // Mostra posts do usuário
+      const posts = JSON.parse(localStorage.getItem('posts'));
+      const userPosts = posts.filter(post => post.username === username);
+      const otherUserPostsContainer = document.getElementById('other-user-posts');
+      otherUserPostsContainer.innerHTML = "";
+      
+      if (userPosts.length === 0) {
+        otherUserPostsContainer.innerHTML = "<p style='text-align:center;'>Nenhuma postagem encontrada.</p>";
+      } else {
+        // Ordena posts por data (mais recentes primeiro)
+        userPosts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        
+        userPosts.forEach(post => {
+          const postItem = document.createElement('div');
+          postItem.classList.add('feed-item');
+          let mediaHTML = "";
+          
+          if (post.media) {
+            if (post.media.startsWith("data:video")) {
+              mediaHTML = `<video controls>
+                             <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
+                           </video>`;
+            } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
+              mediaHTML = `<img src="${post.media}" alt="Post Media">`;
+            }
+          }
+          
+          postItem.innerHTML = `
+            ${mediaHTML}
+            <div class="post-info">
+              <h3>${post.title}</h3>
+              <p class="post-date">${post.timestamp}</p>
+              <p>${post.text}</p>
+              ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
             </div>
           `;
-          if (loggedInUser !== username) {
-            const followText = "Seguir";
-            otherProfileCard.innerHTML += `<button onclick="alert('Função de seguir não integrada neste exemplo.')">${followText}</button>`;
-          }
-        })
-        .catch(err => console.error(err));
-      fetch(`${baseURL}/api/posts?username=${username}`)
-        .then(response => response.json())
-        .then(data => {
-          const otherUserPostsContainer = document.getElementById('other-user-posts');
-          otherUserPostsContainer.innerHTML = "";
-          if (data.length === 0) {
-            otherUserPostsContainer.innerHTML = "<p style='text-align:center;'>Nenhuma postagem encontrada.</p>";
-          } else {
-            data.forEach(post => {
-              const postItem = document.createElement('div');
-              postItem.classList.add('feed-item');
-              let mediaHTML = "";
-              if (post.media) {
-                if (post.media.startsWith("data:video")) {
-                  mediaHTML = `<video controls>
-                                 <source src="${post.media}" type="${post.media.substring(5, post.media.indexOf(';'))}">
-                               </video>`;
-                } else if (post.media.startsWith("data:image") || post.media.startsWith("http")) {
-                  mediaHTML = `<img src="${post.media}" alt="Post Media">`;
-                }
-              }
-              postItem.innerHTML = `
-                ${mediaHTML}
-                <div class="post-info">
-                  <h3>${post.title}</h3>
-                  <p class="post-date">${post.timestamp}</p>
-                  <p>${post.text}</p>
-                  ${post.link ? `<a href="${post.link}" target="_blank">Link adicional</a>` : ""}
-                </div>
-              `;
-              otherUserPostsContainer.appendChild(postItem);
-            });
-          }
-        })
-        .catch(err => console.error(err));
+          otherUserPostsContainer.appendChild(postItem);
+        });
+      }
     }
     
     /* ---------- Utilitários ---------- */
@@ -1123,18 +1186,30 @@
         reader.readAsDataURL(file);
       });
     }
+
     function showNewPostModal() {
       document.getElementById('new-post-modal').style.display = 'block';
     }
+
     function closeNewPostModal() {
       document.getElementById('new-post-modal').style.display = 'none';
     }
+
     function showNewStoryModal() {
       document.getElementById('new-story-modal').style.display = 'block';
     }
+
     function closeNewStoryModal() {
       document.getElementById('new-story-modal').style.display = 'none';
     }
+
+    function showFeed() {
+      hideAllSections();
+      document.getElementById('post-section').style.display = 'block';
+      displayPosts();
+      displayStories();
+    }
+
     // Fechar modais ao clicar fora
     window.onclick = function(event) {
       const modalIds = ["new-post-modal", "new-story-modal", "edit-profile-modal", "new-chat-modal", "story-modal"];
