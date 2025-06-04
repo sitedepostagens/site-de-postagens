@@ -1070,27 +1070,6 @@
 
   <script>
     // Inicializa os dados no localStorage se não existirem
-    function initializeLocalStorage() {
-      if (!localStorage.getItem('users')) {
-        localStorage.setItem('users', JSON.stringify([]));
-      }
-      if (!localStorage.getItem('posts')) {
-        localStorage.setItem('posts', JSON.stringify([
-          {
-            id: 1,
-            username: "admin",
-            title: "Bem-vindo ao Comunidade Compartilha!",
-            text: "Esta é uma postagem de exemplo para demonstrar o funcionamento do site. Sinta-se à vontade para explorar e criar suas próprias postagens!",
-            media: "",
-            link: "",
-            timestamp: new Date().toLocaleString()
-          }
-        ]));
-      }
-      if (!localStorage.getItem('stories')) {
-        localStorage.setItem('stories', JSON.stringify([]));
-      }
-    }
 
     // Chamada para inicializar os dados
     initializeLocalStorage();
