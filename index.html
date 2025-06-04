@@ -810,7 +810,7 @@
       
       <div class="profile-header">
         <img id="profile-avatar" src="https://via.placeholder.com/120" alt="Foto de perfil" class="profile-avatar">
-        <h2 id="profile-username" class="profile-name"></h2>
+        <h2 id="profile-email" class="profile-name"></h2>
         <p id="profile-bio" class="profile-bio">Sem biografia definida.</p>
         
         <div class="profile-stats">
@@ -843,7 +843,7 @@
       
       <div class="profile-header">
         <img id="other-profile-avatar" src="https://via.placeholder.com/120" alt="Foto de perfil" class="profile-avatar">
-        <h2 id="other-profile-username" class="profile-name"></h2>
+        <h2 id="other-profile-email" class="profile-name"></h2>
         <p id="other-profile-bio" class="profile-bio"></p>
         
         <div class="profile-stats">
@@ -1069,32 +1069,6 @@
   </footer>
 
   <script>
-    // Inicializa os dados no localStorage se não existirem
-
-    // Chamada para inicializar os dados
-    initializeLocalStorage();
-
-    // Estado global
-    let loggedInUser = localStorage.getItem('loggedInUser');
-    let currentStoryArray = [];
-    let currentStoryIndex = 0;
-    let storyTimer;
-
-    // Atualiza a interface com base no estado de login
-    function updateUI() {
-      const authLinks = document.getElementById('auth-links');
-      const userLinks = document.getElementById('user-links');
-      
-      if (loggedInUser) {
-        authLinks.style.display = 'none';
-        userLinks.style.display = 'flex';
-        document.getElementById('profile-username').textContent = loggedInUser;
-      } else {
-        authLinks.style.display = 'flex';
-        userLinks.style.display = 'none';
-      }
-    }
-
     // Inicializa a UI
     updateUI();
     showHomePage();
@@ -1145,42 +1119,6 @@
       updateProfileDisplay();
       displayUserPosts();
     }
-
-    function showOtherProfilePage(username) {
-      hideAllSections();
-      document.getElementById('other-profile-page').style.display = 'block';
-      document.title = `Comunidade Compartilha | Perfil de ${username}`;
-      
-      // Atualiza breadcrumb
-      document.getElementById('other-profile-breadcrumb').textContent = username;
-      
-      const users = JSON.parse(localStorage.getItem('users'));
-      const user = users.find(u => u.username === username);
-      
-      if (user) {
-        document.getElementById('other-profile-username').textContent = username;
-        document.getElementById('other-profile-bio').textContent = user.bio || "Sem biografia definida.";
-        document.getElementById('other-profile-avatar').src = user.profile_picture || "https://via.placeholder.com/120";
-        
-        // Mostra o botão de seguir apenas se for outro usuário
-        const followButton = document.getElementById('follow-button');
-        if (loggedInUser && loggedInUser !== username) {
-          followButton.style.display = 'block';
-          // Verifica se já está seguindo
-          const currentUser = users.find(u => u.username === loggedInUser);
-          if (currentUser.following && currentUser.following.includes(username)) {
-            followButton.innerHTML = '<i class="fas fa-user-check"></i> Seguindo';
-            followButton.classList.add('btn-outline');
-            followButton.classList.remove('btn-primary');
-          } else {
-            followButton.innerHTML = '<i class="fas fa-user-plus"></i> Seguir';
-            followButton.classList.add('btn-primary');
-            followButton.classList.remove('btn-outline');
-          }
-        } else {
-          followButton.style.display = 'none';
-        }
-      }
 
       // Carrega stories do usuário
       const stories = JSON.parse(localStorage.getItem('stories'));
